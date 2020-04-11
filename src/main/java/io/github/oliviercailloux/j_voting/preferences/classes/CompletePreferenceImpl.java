@@ -74,13 +74,13 @@ public class CompletePreferenceImpl implements CompletePreference {
     }
 
     private ImmutableGraph<Alternative> createGraph(
-                    List<? extends Set<Alternative>> equivalenceClasses)
+                    List<? extends Set<Alternative>> equivalenceClasses1)
                     throws EmptySetException, DuplicateValueException {
         List<Alternative> listAlternatives = Lists.newArrayList();
         MutableGraph<Alternative> newGraph = GraphBuilder.directed()
                         .allowsSelfLoops(true).build();
         Alternative lastSetLinker = null;
-        for (Set<Alternative> equivalenceClasse : equivalenceClasses) {
+        for (Set<Alternative> equivalenceClasse : equivalenceClasses1) {
             if (equivalenceClasse.isEmpty())
                 throw new EmptySetException("A Set can't be empty");
             Alternative rememberAlternative = null;
@@ -118,9 +118,9 @@ public class CompletePreferenceImpl implements CompletePreference {
     @Override
     public int getRank(Alternative a) {
         Preconditions.checkNotNull(a);
-        for (Set<Alternative> equivalenceClasse : equivalenceClasses) {
-            if (equivalenceClasse.contains(a))
-                return equivalenceClasses.indexOf(equivalenceClasse) + 1;
+        for (ImmutableSet<Alternative> equivalenceClass : equivalenceClasses) {
+            if (equivalenceClass.contains(a))
+                return equivalenceClasses.indexOf(equivalenceClass) + 1;
         }
         throw new NoSuchElementException("Alternative not found");
     }
