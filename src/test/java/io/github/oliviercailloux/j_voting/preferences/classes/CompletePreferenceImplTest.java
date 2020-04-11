@@ -30,8 +30,19 @@ class CompletePreferenceImplTest {
 
     private CompletePreference getTwoClassesPreference()
                     throws DuplicateValueException, EmptySetException {
-        return CompletePreferenceImpl.asCompletePreference(v1,
-                        ImmutableList.of(a12, ImmutableSet.of(a3)));
+        return CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(a12, ImmutableSet.of(a3)));
+    }
+    
+    @Test
+    public void sizeTest() throws DuplicateValueException, EmptySetException {
+    	CompletePreference toTest = getTwoClassesPreference();
+    	assertEquals(3, toTest.size());
+    }
+    
+    @Test
+    public void sizeTestListSetAlternative() throws DuplicateValueException, EmptySetException {
+    	CompletePreference toTest = getTwoClassesPreference();
+    	assertEquals(3, toTest.size(toTest.asEquivalenceClasses()));
     }
 
     @Test
@@ -39,6 +50,7 @@ class CompletePreferenceImplTest {
         CompletePreference toTest = getTwoClassesPreference();
         assertEquals(1, toTest.getRank(a1));
         assertEquals(2, toTest.getRank(a3));
+        assertEquals(1, toTest.getRank(a2));
     }
 
     @Test

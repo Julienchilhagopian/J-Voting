@@ -24,6 +24,10 @@ public interface CompletePreference extends ImmutablePreference {
      * @throws IllegalArgumentException if a is not contained in this preference
      */
     public int getRank(Alternative a);
+    
+    public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses);
+    
+    public int size();
 
     /**
      *

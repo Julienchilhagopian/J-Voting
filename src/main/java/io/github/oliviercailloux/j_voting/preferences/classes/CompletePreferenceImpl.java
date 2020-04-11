@@ -104,6 +104,34 @@ public class CompletePreferenceImpl implements CompletePreference {
         }
         return ImmutableGraph.copyOf(Graphs.transitiveClosure(newGraph));
     }
+    
+    /**
+     * @return the size of the Preference, i.e. the number of alternatives in
+     *         the Preference
+     */
+    @Override
+	public int size() {
+        LOGGER.debug("size :");
+        return size(equivalenceClasses);
+    }
+    
+    /**
+     * 
+     * @param list not <code> null </code>
+     * @return the size of a list of alternative sets (it means the addition of all the sets size)
+     */
+    @Override
+	public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
+        LOGGER.debug("list set alternative size:");
+        Preconditions.checkNotNull(equivalenceClasses1);
+        int size = 0;
+        for (ImmutableSet<Alternative> set : equivalenceClasses1) {
+            size += set.size();
+        }
+        LOGGER.debug("size = {}", size);
+        return size;
+    }
+    
 
     @Override
     public ImmutableSet<Alternative> getAlternatives() {
