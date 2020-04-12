@@ -1,5 +1,7 @@
 package io.github.oliviercailloux.j_voting.preferences.classes;
 
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -146,6 +148,30 @@ public class CompletePreferenceImpl implements CompletePreference {
         LOGGER.debug("isStrict:");
         return (alternativeNumber(equivalenceClasses) == size(equivalenceClasses));
     }
+    
+    /**
+     * 
+     * @param preferences not <code> null </code> a list of sets of alternatives
+     * @return a set of alternatives containing all the alternatives of the list
+     *         of set of alternative given. If an alternative appears several
+     *         times in the list of sets, it appears only once in the new set.
+     */
+    @Override
+	public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
+        LOGGER.debug("toAlternativeSet:");
+        Preconditions.checkNotNull(equivalenceClasses1);
+        Set<Alternative> set = new HashSet<>();
+        for (ImmutableSet<Alternative> sets : equivalenceClasses1) {
+            for (Alternative alter : sets) {
+                if (!set.contains(alter)) {
+                    set.add(alter);
+                }
+            }
+        }
+        LOGGER.debug("set : {}", set);
+        return set;
+    }
+    
     
 
     @Override

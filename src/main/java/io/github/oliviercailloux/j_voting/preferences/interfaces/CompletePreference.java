@@ -1,5 +1,8 @@
 package io.github.oliviercailloux.j_voting.preferences.interfaces;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
@@ -45,6 +48,15 @@ public interface CompletePreference extends ImmutablePreference {
      *         having the same rank)
      */
     public boolean isStrict();
+    
+    /**
+     * 
+     * @param equivalenceClasses1 not <code> null </code> a list of sets of alternatives
+     * @return a set of alternatives containing all the alternatives of the list
+     *         of set of alternative given. If an alternative appears several
+     *         times in the list of sets, it appears only once in the new set.
+     */
+    public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1);
     
     /**
      *

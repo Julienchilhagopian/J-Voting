@@ -5,6 +5,9 @@ import static io.github.oliviercailloux.j_voting.AlternativeHelper.a12;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a2;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a3;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a4;
+import static io.github.oliviercailloux.j_voting.AlternativeHelper.a5;
+import static io.github.oliviercailloux.j_voting.AlternativeHelper.a45;
+import static io.github.oliviercailloux.j_voting.AlternativeHelper.a12345;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,6 +27,7 @@ import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
 import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import io.github.oliviercailloux.j_voting.preferences.interfaces.CompletePreference;
 
+
 class CompletePreferenceImplTest {
 
     private static Voter v1 = Voter.createVoter(1);
@@ -35,6 +39,10 @@ class CompletePreferenceImplTest {
     
     private CompletePreference getTwoStrictPreference() throws DuplicateValueException, EmptySetException {
     	return CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(ImmutableSet.of(a1), ImmutableSet.of(a3)));
+    }
+    
+    private CompletePreference getSetPreference() throws DuplicateValueException, EmptySetException {
+    	return CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(a12, ImmutableSet.of(a3), a45));
     }
     
     @Test
@@ -56,8 +64,15 @@ class CompletePreferenceImplTest {
     	assertEquals(false, toTestNonStrict.isStrict());
     	assertEquals(true, toTestStrict.isStrict());
     }
-
+    
     @Test
+    public void toAlternativeSetTest() throws DuplicateValueException, EmptySetException { 
+    	ImmutableSet<Alternative> result = ImmutableSet.of(a1, a2, a3, a4, a5);
+    	CompletePreference toTest = getSetPreference();
+    	assertEquals(result, toTest.toAlternativeSet(toTest.asEquivalenceClasses()));
+    }
+     
+	@Test
     void getRankTest() throws DuplicateValueException, EmptySetException {
         CompletePreference toTest = getTwoClassesPreference();
         assertEquals(1, toTest.getRank(a1));
