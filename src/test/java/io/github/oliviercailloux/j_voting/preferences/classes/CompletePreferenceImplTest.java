@@ -113,7 +113,7 @@ class CompletePreferenceImplTest {
     public void asEquivalenceClassesTest()
                     throws DuplicateValueException, EmptySetException {
         CompletePreference toTest = getTwoClassesPreference();
-        List<ImmutableSet<Alternative>> list = new ArrayList<ImmutableSet<Alternative>>(
+        List<ImmutableSet<Alternative>> list = new ArrayList<>(
                         Arrays.asList(ImmutableSet.of(a1, a2),
                                         ImmutableSet.of(a3)));
         assertEquals(list, toTest.asEquivalenceClasses());
@@ -127,7 +127,7 @@ class CompletePreferenceImplTest {
     }
 
     @Test
-    public void createDuplicateException() throws DuplicateValueException {
+    public void createDuplicateException() {
         assertThrows(DuplicateValueException.class, () -> {
             CompletePreferenceImpl.asCompletePreference(v1,
                             ImmutableList.of(a12, ImmutableSet.of(a2)));
@@ -135,7 +135,7 @@ class CompletePreferenceImplTest {
     }
 
     @Test
-    public void createEmptySetException() throws DuplicateValueException {
+    public void createEmptySetException() {
         assertThrows(EmptySetException.class, () -> {
             CompletePreferenceImpl.asCompletePreference(v1, ImmutableList
                             .of(ImmutableSet.of(), ImmutableSet.of(a2)));
