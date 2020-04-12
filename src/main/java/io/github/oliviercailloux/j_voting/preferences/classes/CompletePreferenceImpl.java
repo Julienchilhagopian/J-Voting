@@ -106,19 +106,23 @@ public class CompletePreferenceImpl implements CompletePreference {
     }
     
     /**
-     * @return the size of the Preference, i.e. the number of alternatives in
+     * @return the number of alternatives in
      *         the Preference
      */
     @Override
-	public int size() {
-        LOGGER.debug("size :");
-        return size(equivalenceClasses);
+	public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
+        int number = 0;
+        for (ImmutableSet<Alternative> set : equivalenceClasses1) {
+        	for(Alternative alt : set) {
+        		number += 1;
+        	}
+        }
+        return number;
     }
     
     /**
      * 
-     * @param list not <code> null </code>
-     * @return the size of a list of alternative sets (it means the addition of all the sets size)
+     * @return the size of a list of alternative sets (it means the number of Sets)
      */
     @Override
 	public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
@@ -126,10 +130,21 @@ public class CompletePreferenceImpl implements CompletePreference {
         Preconditions.checkNotNull(equivalenceClasses1);
         int size = 0;
         for (ImmutableSet<Alternative> set : equivalenceClasses1) {
-            size += set.size();
+            size += 1;
         }
         LOGGER.debug("size = {}", size);
         return size;
+    }
+    
+    /**
+     * 
+     * @return true if the Preference is Strict (without several alternatives
+     *         having the same rank)
+     */
+    @Override
+    public boolean isStrict() {
+        LOGGER.debug("isStrict:");
+        return (alternativeNumber(equivalenceClasses) == size(equivalenceClasses));
     }
     
 

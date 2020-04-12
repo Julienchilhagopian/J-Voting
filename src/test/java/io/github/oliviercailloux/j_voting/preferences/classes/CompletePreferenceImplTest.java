@@ -33,16 +33,28 @@ class CompletePreferenceImplTest {
         return CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(a12, ImmutableSet.of(a3)));
     }
     
-    @Test
-    public void sizeTest() throws DuplicateValueException, EmptySetException {
-    	CompletePreference toTest = getTwoClassesPreference();
-    	assertEquals(3, toTest.size());
+    private CompletePreference getTwoStrictPreference() throws DuplicateValueException, EmptySetException {
+    	return CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(ImmutableSet.of(a1), ImmutableSet.of(a3)));
     }
     
     @Test
-    public void sizeTestListSetAlternative() throws DuplicateValueException, EmptySetException {
+    public void alternativeNumberTest() throws DuplicateValueException, EmptySetException {
     	CompletePreference toTest = getTwoClassesPreference();
-    	assertEquals(3, toTest.size(toTest.asEquivalenceClasses()));
+    	assertEquals(3, toTest.alternativeNumber(toTest.asEquivalenceClasses()));
+    }
+    
+    @Test
+    public void sizeTest() throws DuplicateValueException, EmptySetException {
+    	CompletePreference toTest = getTwoClassesPreference();
+    	assertEquals(2, toTest.size(toTest.asEquivalenceClasses()));
+    }
+    
+    @Test
+    public void isStrictTest() throws DuplicateValueException, EmptySetException { 
+    	CompletePreference toTestNonStrict = getTwoClassesPreference();
+    	CompletePreference toTestStrict = getTwoStrictPreference();
+    	assertEquals(false, toTestNonStrict.isStrict());
+    	assertEquals(true, toTestStrict.isStrict());
     }
 
     @Test

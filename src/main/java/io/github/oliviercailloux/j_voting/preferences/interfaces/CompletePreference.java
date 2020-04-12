@@ -25,10 +25,27 @@ public interface CompletePreference extends ImmutablePreference {
      */
     public int getRank(Alternative a);
     
-    public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses);
+    /**
+     * 
+     * @param equivalenceClasses1 is a List of Set of Alternatives (=preference)
+     * @return the size of a list of alternative sets (it means the addition of all the sets size)
+     */
+    public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1);
     
-    public int size();
+    /**
+     * 
+     * @param equivalenceClasses1 is a List of Set of Alternatives (=preference)
+     * @return the number of alternatives in the Preference
+     */
+    public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1);
 
+    /**
+     * 
+     * @return true if the Preference is Strict (without several alternatives
+     *         having the same rank)
+     */
+    public boolean isStrict();
+    
     /**
      *
      * @param n is a rank. Must be > 0.
