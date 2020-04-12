@@ -172,6 +172,25 @@ public class CompletePreferenceImpl implements CompletePreference {
         return set;
     }
     
+    /**
+     * @param alter <code>not null</code>
+     * @return whether the preference contains the alternative given as
+     *         parameter
+     */
+    public boolean contains(Alternative alter) {
+        LOGGER.debug("contains:");
+        Preconditions.checkNotNull(alter);
+        LOGGER.debug("parameter alternative : {}", alter);
+        return (toAlternativeSet(equivalenceClasses).contains(alter));
+    }
+    
+    
+    
+    
+    
+    
+    
+    
     
 
     @Override

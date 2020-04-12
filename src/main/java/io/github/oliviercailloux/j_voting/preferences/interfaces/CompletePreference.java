@@ -57,6 +57,13 @@ public interface CompletePreference extends ImmutablePreference {
      *         times in the list of sets, it appears only once in the new set.
      */
     public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1);
+
+    /**
+     * @param alter <code>not null</code>
+     * @return whether the preference contains the alternative given as
+     *         parameter
+     */
+    public boolean contains(Alternative alter);
     
     /**
      *

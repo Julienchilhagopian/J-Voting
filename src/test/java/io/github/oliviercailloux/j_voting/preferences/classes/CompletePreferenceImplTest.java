@@ -71,6 +71,17 @@ class CompletePreferenceImplTest {
     	CompletePreference toTest = getSetPreference();
     	assertEquals(result, toTest.toAlternativeSet(toTest.asEquivalenceClasses()));
     }
+    
+    @Test
+    public void containsTest() throws DuplicateValueException, EmptySetException {
+    	CompletePreference toTest = getTwoClassesPreference();
+    	assertEquals(true, toTest.contains(a1));
+    	assertEquals(false, toTest.contains(a5));
+    }
+    
+    
+    
+    
      
 	@Test
     void getRankTest() throws DuplicateValueException, EmptySetException {
