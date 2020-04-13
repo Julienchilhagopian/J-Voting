@@ -20,6 +20,7 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.j_voting.Alternative;
+import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
 import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
@@ -128,13 +129,11 @@ public class CompletePreferenceImpl implements CompletePreference {
      */
     @Override
 	public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
-        LOGGER.debug("list set alternative size:");
         Preconditions.checkNotNull(equivalenceClasses1);
         int size = 0;
         for (ImmutableSet<Alternative> set : equivalenceClasses1) {
             size += 1;
         }
-        LOGGER.debug("size = {}", size);
         return size;
     }
     
@@ -145,7 +144,6 @@ public class CompletePreferenceImpl implements CompletePreference {
      */
     @Override
     public boolean isStrict() {
-        LOGGER.debug("isStrict:");
         return (alternativeNumber(equivalenceClasses) == size(equivalenceClasses));
     }
     
@@ -158,7 +156,6 @@ public class CompletePreferenceImpl implements CompletePreference {
      */
     @Override
 	public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
-        LOGGER.debug("toAlternativeSet:");
         Preconditions.checkNotNull(equivalenceClasses1);
         Set<Alternative> set = new HashSet<>();
         for (ImmutableSet<Alternative> sets : equivalenceClasses1) {
@@ -168,7 +165,6 @@ public class CompletePreferenceImpl implements CompletePreference {
                 }
             }
         }
-        LOGGER.debug("set : {}", set);
         return set;
     }
     
@@ -177,14 +173,38 @@ public class CompletePreferenceImpl implements CompletePreference {
      * @return whether the preference contains the alternative given as
      *         parameter
      */
-    public boolean contains(Alternative alter) {
-        LOGGER.debug("contains:");
-        Preconditions.checkNotNull(alter);
-        LOGGER.debug("parameter alternative : {}", alter);
-        return (toAlternativeSet(equivalenceClasses).contains(alter));
+    @Override
+	public boolean contains(Alternative alternative) {
+        Preconditions.checkNotNull(alternative);
+        return (toAlternativeSet(equivalenceClasses).contains(alternative));
     }
     
+    /**
+     * @param p <code>not null</code>
+     * @return whether the parameter preference contains all the alternatives in
+     *         the calling preference
+     */
+    @Override
+	public boolean isIncludedIn(CompletePreferenceImpl completePreference) {
+        Preconditions.checkNotNull(completePreference);
+        for (Alternative alternative : toAlternativeSet(equivalenceClasses)) {
+            if (!completePreference.contains(alternative)) {
+                return false;
+            }
+        }
+        return true;
+    }
     
+    /**
+     * @param p <code>not null</code>
+     * @return whether the preferences are about the same alternatives exactly
+     *         (not necessarily in the same order).
+     */
+    @Override
+	public boolean hasSameAlternatives(CompletePreferenceImpl completePreference) {
+        Preconditions.checkNotNull(completePreference);
+        return (this.isIncludedIn(completePreference) && completePreference.isIncludedIn(this));
+    }
     
     
     

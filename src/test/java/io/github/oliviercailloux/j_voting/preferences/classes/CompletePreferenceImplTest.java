@@ -4,6 +4,7 @@ import static io.github.oliviercailloux.j_voting.AlternativeHelper.a1;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a12;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a2;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a3;
+import static io.github.oliviercailloux.j_voting.AlternativeHelper.a31;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a4;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a5;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a45;
@@ -79,10 +80,25 @@ class CompletePreferenceImplTest {
     	assertEquals(false, toTest.contains(a5));
     }
     
+    @Test
+    void isIncludedInTest() throws DuplicateValueException, EmptySetException {
+    	CompletePreferenceImpl toTestIsContained = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(a12, ImmutableSet.of(a3)));
+    	CompletePreferenceImpl toTestContains = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(a31, ImmutableSet.of(a2), ImmutableSet.of(a4)));
+    	assertEquals(true, toTestIsContained.isIncludedIn(toTestContains));
+    	assertEquals(false, toTestContains.isIncludedIn(toTestIsContained));
+    }
     
-    
-    
+    @Test
+    void hasSameAlternativesTest() throws DuplicateValueException, EmptySetException {
+    	CompletePreferenceImpl toTest1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(a45, ImmutableSet.of(a3)));
+    	CompletePreferenceImpl toTest2 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(ImmutableSet.of(a3), ImmutableSet.of(a4), ImmutableSet.of(a5)));
+    	CompletePreferenceImpl toTest3 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(ImmutableSet.of(a1),ImmutableSet.of(a3), ImmutableSet.of(a4), ImmutableSet.of(a5)));
+    	assertEquals(true, toTest1.hasSameAlternatives(toTest2));
+    	assertEquals(false, toTest1.hasSameAlternatives(toTest3));
+
+    }
      
+    
 	@Test
     void getRankTest() throws DuplicateValueException, EmptySetException {
         CompletePreference toTest = getTwoClassesPreference();

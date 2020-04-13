@@ -7,6 +7,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.j_voting.Alternative;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 
 /**
  * A Complete Preference is is an immutable preference. A complete preference
@@ -82,4 +83,19 @@ public interface CompletePreference extends ImmutablePreference {
      *         All the alternatives in a set are considered ex-aequo.
      */
     public ImmutableList<ImmutableSet<Alternative>> asEquivalenceClasses();
+    
+    /**
+     * @param p <code>not null</code>
+     * @return whether the parameter preference contains all the alternatives in
+     *         the calling preference
+     */
+    public boolean isIncludedIn(CompletePreferenceImpl completePreference);
+    
+    /**
+     * @param p <code>not null</code>
+     * @return whether the preferences are about the same alternatives exactly
+     *         (not necessarily in the same order).
+     */
+    public boolean hasSameAlternatives(CompletePreferenceImpl completePreference);
+    
 }
