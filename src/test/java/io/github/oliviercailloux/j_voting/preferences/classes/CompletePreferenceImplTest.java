@@ -97,6 +97,13 @@ class CompletePreferenceImplTest {
     	assertEquals(false, toTest1.hasSameAlternatives(toTest3));
 
     }
+    
+    @Test
+    public void toStrictPreferenceTest() throws DuplicateValueException, EmptySetException {
+    	CompletePreferenceImpl toTestComplete = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1,ImmutableList.of(ImmutableSet.of(a1),ImmutableSet.of(a3), ImmutableSet.of(a2)));
+    	LinearPreferenceImpl toTestLinear = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1,ImmutableList.of(a1, a3, a2));
+    	assertEquals(toTestLinear,toTestComplete.toStrictPreference());
+    }
      
     
 	@Test
@@ -183,4 +190,5 @@ class CompletePreferenceImplTest {
                             .of(ImmutableSet.of(), ImmutableSet.of(a2)));
         });
     }
+    
 }

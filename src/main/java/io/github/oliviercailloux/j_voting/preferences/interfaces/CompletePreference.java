@@ -7,7 +7,10 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 
 import io.github.oliviercailloux.j_voting.Alternative;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 
 /**
  * A Complete Preference is is an immutable preference. A complete preference
@@ -97,5 +100,15 @@ public interface CompletePreference extends ImmutablePreference {
      *         (not necessarily in the same order).
      */
     public boolean hasSameAlternatives(CompletePreferenceImpl completePreference);
+    
+    /**
+     * 
+     * @return the StrictPreference built from the preference if the preference
+     *         is strict. If the preference is not strict it throws an
+     *         IllegalArgumentException.
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
+     */
+    public LinearPreferenceImpl toStrictPreference() throws EmptySetException, DuplicateValueException;
     
 }

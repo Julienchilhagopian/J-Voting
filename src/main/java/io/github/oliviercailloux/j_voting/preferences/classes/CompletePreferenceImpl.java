@@ -1,5 +1,6 @@
 package io.github.oliviercailloux.j_voting.preferences.classes;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
 import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
@@ -204,6 +206,34 @@ public class CompletePreferenceImpl implements CompletePreference {
 	public boolean hasSameAlternatives(CompletePreferenceImpl completePreference) {
         Preconditions.checkNotNull(completePreference);
         return (this.isIncludedIn(completePreference) && completePreference.isIncludedIn(this));
+    }
+    
+    /**
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
+     * 
+     * @return the StrictPreference built from the preference if the preference
+     *         is strict. If the preference is not strict it throws an
+     *         IllegalArgumentException.
+     * @throws DuplicateValueException 
+     * @throws  
+     */
+    @Override
+	public LinearPreferenceImpl toStrictPreference() throws EmptySetException, DuplicateValueException {
+        if (!isStrict()) {
+            throw new IllegalArgumentException("the preference is not strict.");
+        }
+        List<Alternative> list = new ArrayList<>();
+        ImmutableList<Alternative> l = ImmutableList.copyOf(list);
+        for (ImmutableSet<Alternative> set : equivalenceClasses) {
+            for (Alternative a : set) {
+                list.add(a);
+            }
+        }
+        LOGGER.debug("list : {}", list);
+        return (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference2(voter,l,equivalenceClasses);
     }
     
     

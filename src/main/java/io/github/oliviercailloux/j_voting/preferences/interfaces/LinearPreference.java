@@ -1,8 +1,15 @@
 package io.github.oliviercailloux.j_voting.preferences.interfaces;
 
+import java.util.List;
+import java.util.Set;
+
 import com.google.common.collect.ImmutableList;
 
 import io.github.oliviercailloux.j_voting.Alternative;
+import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 
 /**
  * A linear preference is an antisymmetric complete preference. A linear
@@ -19,4 +26,12 @@ public interface LinearPreference extends CompletePreference {
      *
      */
     public ImmutableList<Alternative> asList();
+    
+    /**
+     * 
+     * @param ImmutableList<Alternative> list1
+     * @return the length of the list
+     */
+	public int sizeLinear(ImmutableList<Alternative> list1);
+    
 }
