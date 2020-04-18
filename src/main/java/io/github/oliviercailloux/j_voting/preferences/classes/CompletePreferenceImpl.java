@@ -118,9 +118,7 @@ public class CompletePreferenceImpl implements CompletePreference {
 	public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
         int number = 0;
         for (ImmutableSet<Alternative> set : equivalenceClasses1) {
-        	for(Alternative alt : set) {
-        		number += 1;
-        	}
+        	number += set.size();
         }
         return number;
     }
@@ -162,9 +160,7 @@ public class CompletePreferenceImpl implements CompletePreference {
         Set<Alternative> set = new HashSet<>();
         for (ImmutableSet<Alternative> sets : equivalenceClasses1) {
             for (Alternative alter : sets) {
-                if (!set.contains(alter)) {
-                    set.add(alter);
-                }
+                set.add(alter);
             }
         }
         return set;
