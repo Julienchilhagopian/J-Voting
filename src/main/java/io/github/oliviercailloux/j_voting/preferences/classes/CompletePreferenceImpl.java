@@ -123,6 +123,9 @@ public class CompletePreferenceImpl implements CompletePreference {
 	public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
         int number = 0;
         for (ImmutableSet<Alternative> set : equivalenceClasses1) {
+            // Ici on a warning car alt n'est pas utilisé
+            // je vous porpose de remplacer le for par :
+            // number += set.size(); -> les tests sont ok
         	for(Alternative alt : set) {
         		number += 1;
         	}
@@ -170,6 +173,9 @@ public class CompletePreferenceImpl implements CompletePreference {
         Set<Alternative> set = new HashSet<>();
         for (ImmutableSet<Alternative> sets : equivalenceClasses1) {
             for (Alternative alter : sets) {
+                // ici je crois que le contains n'est pas utile car hashset ne prend pas les doublons
+                // https://www.geeksforgeeks.org/hashset-add-method-in-java/
+                // Dans l'exemple on voit que les mm elements ne sont pas retenus
                 if (!set.contains(alter)) {
                     set.add(alter);
                 }
