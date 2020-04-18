@@ -57,7 +57,7 @@ class LinearPreferenceImplTest {
         assertThrows(Exception.class, () -> LinearPreferenceImpl
                         .asLinearPreference(null, ImmutableList.of(null)));
     }
-    // Comment test
+    
     @Test
     void sizeLinearTest() throws EmptySetException, DuplicateValueException {
         LinearPreference toTest = getListedAlternatives();
