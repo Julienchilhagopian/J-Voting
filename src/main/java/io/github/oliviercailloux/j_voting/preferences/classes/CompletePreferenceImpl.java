@@ -78,6 +78,9 @@ public class CompletePreferenceImpl implements CompletePreference {
         this.alternatives = ImmutableSet.copyOf(this.graph.nodes());
     }
 
+    // Je sais pas si Cailloux va aimer le nom equivalenceClasses1.
+    // J'ai vu que c'est pour un warning, il nous faudrait peut etre un synonyme ou carrément un autre nom de parametre.
+    // On peut juste renommer dans la methode : equivalenceClasse -> equivalenceClass (sans le e c'est plus British)
     private ImmutableGraph<Alternative> createGraph(
                     List<? extends Set<Alternative>> equivalenceClasses1)
                     throws EmptySetException, DuplicateValueException {
@@ -114,6 +117,8 @@ public class CompletePreferenceImpl implements CompletePreference {
      * @return the number of alternatives in
      *         the Preference
      */
+    // Il faut peut etre mettre le param aussi dans la javadoc
+    // Pareil pour le nom equivalenceClasses1 jsp ce que vous en pensez
     @Override
 	public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
         int number = 0;
@@ -129,6 +134,7 @@ public class CompletePreferenceImpl implements CompletePreference {
      * 
      * @return the size of a list of alternative sets (it means the number of Sets)
      */
+    // Juste le param dans la javadoc
     @Override
 	public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
         Preconditions.checkNotNull(equivalenceClasses1);
@@ -156,6 +162,8 @@ public class CompletePreferenceImpl implements CompletePreference {
      *         of set of alternative given. If an alternative appears several
      *         times in the list of sets, it appears only once in the new set.
      */
+    // juste le param preferences -> equivalenceClasses1 (ou autre nom) dans la javadoc.
+    // Je crois que en javadoc c'est @param nomDuParametre puis explication du param
     @Override
 	public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
         Preconditions.checkNotNull(equivalenceClasses1);
@@ -175,6 +183,8 @@ public class CompletePreferenceImpl implements CompletePreference {
      * @return whether the preference contains the alternative given as
      *         parameter
      */
+    // Juste alter -> alternative
+    // je sais mm pas si c'est utile la javadoc pour des ptites methodes comme ça
     @Override
 	public boolean contains(Alternative alternative) {
         Preconditions.checkNotNull(alternative);
@@ -186,6 +196,7 @@ public class CompletePreferenceImpl implements CompletePreference {
      * @return whether the parameter preference contains all the alternatives in
      *         the calling preference
      */
+    // juste p -> completePreference
     @Override
 	public boolean isIncludedIn(CompletePreferenceImpl completePreference) {
         Preconditions.checkNotNull(completePreference);
@@ -202,6 +213,7 @@ public class CompletePreferenceImpl implements CompletePreference {
      * @return whether the preferences are about the same alternatives exactly
      *         (not necessarily in the same order).
      */
+    // Juste changer le p
     @Override
 	public boolean hasSameAlternatives(CompletePreferenceImpl completePreference) {
         Preconditions.checkNotNull(completePreference);
@@ -217,9 +229,10 @@ public class CompletePreferenceImpl implements CompletePreference {
      * @return the StrictPreference built from the preference if the preference
      *         is strict. If the preference is not strict it throws an
      *         IllegalArgumentException.
-     * @throws DuplicateValueException 
+     * @throws DuplicateValueException
      * @throws  
      */
+    // faut voir si on garde tous les throws dans la javadoc
     @Override
 	public LinearPreferenceImpl toStrictPreference() throws EmptySetException, DuplicateValueException {
         if (!isStrict()) {
@@ -235,12 +248,6 @@ public class CompletePreferenceImpl implements CompletePreference {
         LOGGER.debug("list : {}", list);
         return (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference2(voter,l,equivalenceClasses);
     }
-    
-    
-    
-    
-    
-    
     
 
     @Override

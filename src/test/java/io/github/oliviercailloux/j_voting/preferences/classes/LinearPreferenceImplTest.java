@@ -40,6 +40,7 @@ class LinearPreferenceImplTest {
         assertEquals(ImmutableList.of(a1, a3, a2), toTest.asList());
     }
 
+    // C'est pas vraiment notre work scope mais on peut peut etre virer les deux assertThrows qui sont identiques
     @Test
     void throwsTest() {
         assertThrows(Exception.class, () -> LinearPreferenceImpl
@@ -57,7 +58,7 @@ class LinearPreferenceImplTest {
         assertThrows(Exception.class, () -> LinearPreferenceImpl
                         .asLinearPreference(null, ImmutableList.of(null)));
     }
-    
+
     @Test
     void sizeLinearTest() throws EmptySetException, DuplicateValueException {
         LinearPreference toTest = getListedAlternatives();

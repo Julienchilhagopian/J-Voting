@@ -76,6 +76,7 @@ public interface CompletePreference extends ImmutablePreference {
      *         is no alternative at this rank.
      * @throws IllegalArgumentException if <code>n < 1</code>.
      */
+    // juste n -> rank
     public ImmutableSet<Alternative> getAlternatives(int rank);
 
     /**
@@ -92,6 +93,7 @@ public interface CompletePreference extends ImmutablePreference {
      * @return whether the parameter preference contains all the alternatives in
      *         the calling preference
      */
+    // Juste p -> completePreference
     public boolean isIncludedIn(CompletePreferenceImpl completePreference);
     
     /**
@@ -99,6 +101,7 @@ public interface CompletePreference extends ImmutablePreference {
      * @return whether the preferences are about the same alternatives exactly
      *         (not necessarily in the same order).
      */
+    // juste p -> completePreference
     public boolean hasSameAlternatives(CompletePreferenceImpl completePreference);
     
     /**

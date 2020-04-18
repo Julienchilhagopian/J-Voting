@@ -25,7 +25,7 @@ import io.github.oliviercailloux.j_voting.preferences.interfaces.Preference;
 
 public class LinearPreferenceImpl extends CompletePreferenceImpl
                 implements LinearPreference {
-
+    // Je crois que cet attribut peut etre private
     ImmutableList<Alternative> list;
     private static final Logger LOGGER = LoggerFactory
                     .getLogger(LinearPreferenceImpl.class.getName());
@@ -86,15 +86,12 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
 		this.list = ImmutableList.copyOf(listAlternatives);
 	}
     
-
-    
-    
-    
     /**
      * @param list1 a list of alternatives not <code> null </code>
      * @return a list of set of alternatives. each set is composed of one
      *         alternative
      */
+    // peut list1 on peut mettre alternativeList ou un truc dans le genre
 	public static List<Set<Alternative>> listAlternativeToListSetAlternative(List<Alternative> list1) {
         Preconditions.checkNotNull(list1);
         List<Set<Alternative>> list = new ArrayList<>();
@@ -114,6 +111,7 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
      * @throws DuplicateValueException 
      * @throws EmptySetException 
      */
+    // Faut check la javadoc si vous voulez l'update ou ne pas la garder
 	public static LinearPreferenceImpl createStrictCompletePreferenceImpl(Voter voter, ImmutableList<Alternative> preference) throws EmptySetException, DuplicateValueException {
         return new LinearPreferenceImpl(voter, listAlternativeToListSetAlternative(preference));
     }
@@ -137,6 +135,7 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
      * @param position not <code>null</code>
      * @return the alternative at the position given in the strict preference
      */
+    // juste position -> rank
     public Alternative getAlternative(Integer rank) {
         Preconditions.checkNotNull(rank);
         if (rank >= this.sizeLinear(this.list)) {
@@ -144,9 +143,6 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
         }
         return list.get(rank);
     }
-    
-    
-    
     
     @Override
     public ImmutableList<Alternative> asList() {
