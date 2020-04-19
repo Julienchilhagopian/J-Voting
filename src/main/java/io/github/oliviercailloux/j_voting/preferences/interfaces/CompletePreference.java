@@ -34,17 +34,17 @@ public interface CompletePreference extends ImmutablePreference {
     
     /**
      * 
-     * @param equivalenceClasses1 is a List of Set of Alternatives (=preference)
-     * @return the size of a list of alternative sets (it means the addition of all the sets size)
+     * @param eqClasses is a List of Set of Alternatives (=preference) <code>not null</code>
+     * @return the size of a list of alternative sets (it means the number of Sets)
      */
-    public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1);
+    public int size(ImmutableList<ImmutableSet<Alternative>> eqClasses);
     
     /**
      * 
-     * @param equivalenceClasses1 is a List of Set of Alternatives (=preference)
+     * @param eqClasses is a List of Set of Alternatives (=preference) <code>not null</code>
      * @return the number of alternatives in the Preference
      */
-    public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1);
+    public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> eqClasses);
 
     /**
      * 
@@ -55,23 +55,23 @@ public interface CompletePreference extends ImmutablePreference {
     
     /**
      * 
-     * @param equivalenceClasses1 not <code> null </code> a list of sets of alternatives
+     * @param eqClasses not <code> null </code> a list of sets of alternatives
      * @return a set of alternatives containing all the alternatives of the list
      *         of set of alternative given. If an alternative appears several
      *         times in the list of sets, it appears only once in the new set.
      */
-    public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1);
+    public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> eqClasses);
 
     /**
-     * @param alter <code>not null</code>
+     * @param alternative <code>not null</code>
      * @return whether the preference contains the alternative given as
      *         parameter
      */
-    public boolean contains(Alternative alter);
+    public boolean contains(Alternative alternative);
     
     /**
      *
-     * @param n is a rank. Must be > 0.
+     * @param rank is a rank. Must be > 0.
      * @return the <code>Aternative</code> set at this rank. Empty set id there
      *         is no alternative at this rank.
      * @throws IllegalArgumentException if <code>n < 1</code>.
@@ -88,14 +88,14 @@ public interface CompletePreference extends ImmutablePreference {
     public ImmutableList<ImmutableSet<Alternative>> asEquivalenceClasses();
     
     /**
-     * @param p <code>not null</code>
+     * @param completePreference <code>not null</code>
      * @return whether the parameter preference contains all the alternatives in
      *         the calling preference
      */
     public boolean isIncludedIn(CompletePreferenceImpl completePreference);
     
     /**
-     * @param p <code>not null</code>
+     * @param completePreference <code>not null</code>
      * @return whether the preferences are about the same alternatives exactly
      *         (not necessarily in the same order).
      */
