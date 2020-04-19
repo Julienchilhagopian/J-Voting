@@ -130,11 +130,8 @@ public class CompletePreferenceImpl implements CompletePreference {
     @Override
 	public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
         Preconditions.checkNotNull(equivalenceClasses1);
-        int size = 0;
-        for (ImmutableSet<Alternative> set : equivalenceClasses1) {
-            size += 1;
-        }
-        return size;
+        System.out.println(equivalenceClasses1.size());
+        return equivalenceClasses1.size();
     }
     
     /**
