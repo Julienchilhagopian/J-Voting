@@ -29,9 +29,9 @@ public interface LinearPreference extends CompletePreference {
     
     /**
      * 
-     * @param ImmutableList<Alternative> list1
+     * @param  alternativeList an ImmutableList of Alternative
      * @return the length of the list
      */
-	public int sizeLinear(ImmutableList<Alternative> list1);
+	public int sizeLinear(ImmutableList<Alternative> alternativeList);
     
 }

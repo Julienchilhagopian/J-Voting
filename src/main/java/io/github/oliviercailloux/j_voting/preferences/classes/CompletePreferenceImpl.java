@@ -78,21 +78,24 @@ public class CompletePreferenceImpl implements CompletePreference {
         this.alternatives = ImmutableSet.copyOf(this.graph.nodes());
     }
 
-    // Je sais pas si Cailloux va aimer le nom equivalenceClasses1.
-    // J'ai vu que c'est pour un warning, il nous faudrait peut etre un synonyme ou carrément un autre nom de parametre.
-    // On peut juste renommer dans la methode : equivalenceClasse -> equivalenceClass (sans le e c'est plus British)
-    private ImmutableGraph<Alternative> createGraph(
-                    List<? extends Set<Alternative>> equivalenceClasses1)
+    /**
+     * Return the graph associated to the preference.
+     * 
+     * @param  eqClasses a set of alternative
+     * @throws EmptySetException
+     * @throws DuplicateValueException
+     */
+    private ImmutableGraph<Alternative> createGraph(List<? extends Set<Alternative>> eqClasses)
                     throws EmptySetException, DuplicateValueException {
         List<Alternative> listAlternatives = Lists.newArrayList();
         MutableGraph<Alternative> newGraph = GraphBuilder.directed()
                         .allowsSelfLoops(true).build();
         Alternative lastSetLinker = null;
-        for (Set<Alternative> equivalenceClasse : equivalenceClasses1) {
-            if (equivalenceClasse.isEmpty())
+        for (Set<Alternative> equivalenceClass : eqClasses) {
+            if (equivalenceClass.isEmpty())
                 throw new EmptySetException("A Set can't be empty");
             Alternative rememberAlternative = null;
-            for (Alternative alternative : equivalenceClasse) {
+            for (Alternative alternative : equivalenceClass) {
                 if (listAlternatives.contains(alternative))
                     throw new DuplicateValueException(
                                     "you can't duplicate Alternatives");
@@ -113,69 +116,37 @@ public class CompletePreferenceImpl implements CompletePreference {
         return ImmutableGraph.copyOf(Graphs.transitiveClosure(newGraph));
     }
     
-    /**
-     * @return the number of alternatives in
-     *         the Preference
-     */
-    // Il faut peut etre mettre le param aussi dans la javadoc
-    // Pareil pour le nom equivalenceClasses1 jsp ce que vous en pensez
+
     @Override
-	public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
+	public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> eqClasses) {
         int number = 0;
-        for (ImmutableSet<Alternative> set : equivalenceClasses1) {
-            // Ici on a warning car alt n'est pas utilisé
-            // je vous porpose de remplacer le for par :
-            // number += set.size(); -> les tests sont ok
-        	for(Alternative alt : set) {
-        		number += 1;
-        	}
+        for (ImmutableSet<Alternative> set : eqClasses) {
+        	number += set.size();
         }
         return number;
     }
     
-    /**
-     * 
-     * @return the size of a list of alternative sets (it means the number of Sets)
-     */
-    // Juste le param dans la javadoc
     @Override
-	public int size(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
-        Preconditions.checkNotNull(equivalenceClasses1);
+	public int size(ImmutableList<ImmutableSet<Alternative>> eqClasses) {
+        Preconditions.checkNotNull(eqClasses);
         int size = 0;
-        for (ImmutableSet<Alternative> set : equivalenceClasses1) {
+        for (ImmutableSet<Alternative> set : eqClasses) {
             size += 1;
         }
         return size;
     }
     
-    /**
-     * 
-     * @return true if the Preference is Strict (without several alternatives
-     *         having the same rank)
-     */
     @Override
     public boolean isStrict() {
         return (alternativeNumber(equivalenceClasses) == size(equivalenceClasses));
     }
     
-    /**
-     * 
-     * @param preferences not <code> null </code> a list of sets of alternatives
-     * @return a set of alternatives containing all the alternatives of the list
-     *         of set of alternative given. If an alternative appears several
-     *         times in the list of sets, it appears only once in the new set.
-     */
-    // juste le param preferences -> equivalenceClasses1 (ou autre nom) dans la javadoc.
-    // Je crois que en javadoc c'est @param nomDuParametre puis explication du param
     @Override
-	public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> equivalenceClasses1) {
-        Preconditions.checkNotNull(equivalenceClasses1);
+	public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> eqClasses) {
+        Preconditions.checkNotNull(eqClasses);
         Set<Alternative> set = new HashSet<>();
-        for (ImmutableSet<Alternative> sets : equivalenceClasses1) {
+        for (ImmutableSet<Alternative> sets : eqClasses) {
             for (Alternative alter : sets) {
-                // ici je crois que le contains n'est pas utile car hashset ne prend pas les doublons
-                // https://www.geeksforgeeks.org/hashset-add-method-in-java/
-                // Dans l'exemple on voit que les mm elements ne sont pas retenus
                 if (!set.contains(alter)) {
                     set.add(alter);
                 }
@@ -184,25 +155,12 @@ public class CompletePreferenceImpl implements CompletePreference {
         return set;
     }
     
-    /**
-     * @param alter <code>not null</code>
-     * @return whether the preference contains the alternative given as
-     *         parameter
-     */
-    // Juste alter -> alternative
-    // je sais mm pas si c'est utile la javadoc pour des ptites methodes comme ça
     @Override
 	public boolean contains(Alternative alternative) {
         Preconditions.checkNotNull(alternative);
         return (toAlternativeSet(equivalenceClasses).contains(alternative));
     }
     
-    /**
-     * @param p <code>not null</code>
-     * @return whether the parameter preference contains all the alternatives in
-     *         the calling preference
-     */
-    // juste p -> completePreference
     @Override
 	public boolean isIncludedIn(CompletePreferenceImpl completePreference) {
         Preconditions.checkNotNull(completePreference);
@@ -214,31 +172,12 @@ public class CompletePreferenceImpl implements CompletePreference {
         return true;
     }
     
-    /**
-     * @param p <code>not null</code>
-     * @return whether the preferences are about the same alternatives exactly
-     *         (not necessarily in the same order).
-     */
-    // Juste changer le p
     @Override
 	public boolean hasSameAlternatives(CompletePreferenceImpl completePreference) {
         Preconditions.checkNotNull(completePreference);
         return (this.isIncludedIn(completePreference) && completePreference.isIncludedIn(this));
     }
     
-    /**
-     * @throws DuplicateValueException 
-     * @throws EmptySetException 
-     * @throws DuplicateValueException 
-     * @throws EmptySetException 
-     * 
-     * @return the StrictPreference built from the preference if the preference
-     *         is strict. If the preference is not strict it throws an
-     *         IllegalArgumentException.
-     * @throws DuplicateValueException
-     * @throws  
-     */
-    // faut voir si on garde tous les throws dans la javadoc
     @Override
 	public LinearPreferenceImpl toStrictPreference() throws EmptySetException, DuplicateValueException {
         if (!isStrict()) {
