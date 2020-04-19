@@ -34,14 +34,14 @@ public interface CompletePreference extends ImmutablePreference {
     
     /**
      * 
-     * @param eqClasses is a List of Set of Alternatives (=preference)
+     * @param eqClasses is a List of Set of Alternatives (=preference) <code>not null</code>
      * @return the size of a list of alternative sets (it means the number of Sets)
      */
     public int size(ImmutableList<ImmutableSet<Alternative>> eqClasses);
     
     /**
      * 
-     * @param eqClasses is a List of Set of Alternatives (=preference)
+     * @param eqClasses is a List of Set of Alternatives (=preference) <code>not null</code>
      * @return the number of alternatives in the Preference
      */
     public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> eqClasses);
