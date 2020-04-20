@@ -10,7 +10,7 @@ import io.github.oliviercailloux.j_voting.Alternative;
  * complete order, or equivalently, the reduction of a weak-order.
  * 
  */
-
+// space
 public interface MutableLinearPreference extends Preference{
 	
 	/**

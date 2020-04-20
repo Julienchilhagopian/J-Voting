@@ -29,7 +29,7 @@ class MutablePreferenceImplTest {
     @Test
     void testGivenVoter() {
         MutablePreferenceImpl pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1));
+                .given(Voter.createVoter(1));
         assertEquals(pref.asGraph().nodes().size(), 0);
     }
 
@@ -39,9 +39,9 @@ class MutablePreferenceImplTest {
     @Test
     void testGivenEmptyPref() {
         MutableGraph<Alternative> graph = GraphBuilder.directed()
-                        .allowsSelfLoops(true).build();
+                .allowsSelfLoops(true).build();
         MutablePreference pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1), graph);
+                .given(Voter.createVoter(1), graph);
         MutablePreferenceImpl pref1 = MutablePreferenceImpl.given(pref);
         assertEquals(pref, pref1);
     }
@@ -52,13 +52,13 @@ class MutablePreferenceImplTest {
     @Test
     void testAsGraph() {
         MutableGraph<Alternative> graph = GraphBuilder.directed()
-                        .allowsSelfLoops(true).build();
+                .allowsSelfLoops(true).build();
         graph.putEdge(a1, a2);
         graph.putEdge(a3, a4);
         graph.putEdge(a4, a5);
         graph.putEdge(a5, a3);
         MutablePreference pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1), Graphs.copyOf(graph));
+                .given(Voter.createVoter(1), Graphs.copyOf(graph));
         graph.putEdge(a1, a1);
         graph.putEdge(a2, a2);
         graph.putEdge(a3, a3);
@@ -73,13 +73,13 @@ class MutablePreferenceImplTest {
     @Test
     void testAsMutableGraph() {
         MutableGraph<Alternative> graph = GraphBuilder.directed()
-                        .allowsSelfLoops(true).build();
+                .allowsSelfLoops(true).build();
         graph.putEdge(a1, a2);
         graph.putEdge(a3, a4);
         graph.putEdge(a4, a5);
         graph.putEdge(a5, a3);
         MutablePreference pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1), Graphs.copyOf(graph));
+                .given(Voter.createVoter(1), Graphs.copyOf(graph));
         assertEquals(graph, pref.asMutableGraph());
     }
 
@@ -89,11 +89,11 @@ class MutablePreferenceImplTest {
     @Test
     void testAddAlternative() {
         MutableGraph<Alternative> graph = GraphBuilder.directed()
-                        .allowsSelfLoops(true).build();
+                .allowsSelfLoops(true).build();
         graph.putEdge(a1, a2);
         graph.putEdge(a2, a1);
         MutablePreference pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1), Graphs.copyOf(graph));
+                .given(Voter.createVoter(1), Graphs.copyOf(graph));
         graph.putEdge(a1, a1);
         graph.putEdge(a2, a2);
         graph.putEdge(a3, a3);
@@ -108,10 +108,10 @@ class MutablePreferenceImplTest {
     @Test
     void testAddEquivalence() {
         MutableGraph<Alternative> graph = GraphBuilder.directed()
-                        .allowsSelfLoops(true).build();
+                .allowsSelfLoops(true).build();
         graph.putEdge(a1, a2);
         MutablePreference pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1), Graphs.copyOf(graph));
+                .given(Voter.createVoter(1), Graphs.copyOf(graph));
         graph.putEdge(a1, a1);
         graph.putEdge(a2, a2);
         graph.putEdge(a3, a3);
@@ -129,10 +129,10 @@ class MutablePreferenceImplTest {
     @Test
     void testSetAsLeastAsGood() {
         MutableGraph<Alternative> graph = GraphBuilder.directed()
-                        .allowsSelfLoops(true).build();
+                .allowsSelfLoops(true).build();
         graph.putEdge(a1, a2);
         MutablePreference pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1), Graphs.copyOf(graph));
+                .given(Voter.createVoter(1), Graphs.copyOf(graph));
         graph.putEdge(a1, a1);
         graph.putEdge(a2, a2);
         graph.putEdge(a3, a3);
@@ -149,12 +149,12 @@ class MutablePreferenceImplTest {
     @Test
     void testGetAlternatives() {
         MutableGraph<Alternative> graph = GraphBuilder.directed()
-                        .allowsSelfLoops(true).build();
+                .allowsSelfLoops(true).build();
         graph.putEdge(a1, a2);
         graph.putEdge(a3, a4);
         graph.putEdge(a5, a5);
         MutablePreference pref = MutablePreferenceImpl
-                        .given(Voter.createVoter(1), Graphs.copyOf(graph));
+                .given(Voter.createVoter(1), Graphs.copyOf(graph));
         ImmutableSet<Alternative> expected = a12345;
         assertEquals(expected, pref.getAlternatives());
     }
