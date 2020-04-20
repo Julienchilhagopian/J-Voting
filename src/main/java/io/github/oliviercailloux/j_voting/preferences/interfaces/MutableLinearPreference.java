@@ -10,11 +10,12 @@ import io.github.oliviercailloux.j_voting.Alternative;
  * complete order, or equivalently, the reduction of a weak-order.
  * 
  */
-// space
-public interface MutableLinearPreference extends Preference{
+
+public interface MutableLinearPreference extends Preference {
 	
 	/**
-	 * Change the order of the alternatives. 
+	 * Change the order of the alternatives. Check if there is a cycle, if all the alternatives are comparable two-by-two
+	 * and if all alternatives are not equals.
 	 * 
 	 * @param newGraph to change the old preference to the new one with an alternative graph.
 	 */
@@ -29,8 +30,7 @@ public interface MutableLinearPreference extends Preference{
 	public void deleteAlternative(Alternative alternative);
 	
 	/**
-	 * Adds an alternative to the Preference. This alternative is not preferred to
-	 * any other of the preference, it is being added isolated.
+	 * Adds an alternative to the Preference. Add a link between the "weakest" alternatives and the new
 	 *
 	 * @param alternative to add to the preference.
 	 */
