@@ -1,5 +1,8 @@
 package io.github.oliviercailloux.j_voting.preferences.classes;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -18,6 +21,8 @@ import com.google.common.graph.ImmutableGraph;
 import com.google.common.graph.MutableGraph;
 
 import io.github.oliviercailloux.j_voting.Alternative;
+import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
 import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
@@ -73,18 +78,24 @@ public class CompletePreferenceImpl implements CompletePreference {
         this.alternatives = ImmutableSet.copyOf(this.graph.nodes());
     }
 
-    private ImmutableGraph<Alternative> createGraph(
-                    List<? extends Set<Alternative>> equivalenceClasses)
+    /**
+     * Return the graph associated to the preference.
+     * 
+     * @param  eqClasses a set of alternative
+     * @throws EmptySetException
+     * @throws DuplicateValueException
+     */
+    private ImmutableGraph<Alternative> createGraph(List<? extends Set<Alternative>> eqClasses)
                     throws EmptySetException, DuplicateValueException {
         List<Alternative> listAlternatives = Lists.newArrayList();
         MutableGraph<Alternative> newGraph = GraphBuilder.directed()
                         .allowsSelfLoops(true).build();
         Alternative lastSetLinker = null;
-        for (Set<Alternative> equivalenceClasse : equivalenceClasses) {
-            if (equivalenceClasse.isEmpty())
+        for (Set<Alternative> equivalenceClass : eqClasses) {
+            if (equivalenceClass.isEmpty())
                 throw new EmptySetException("A Set can't be empty");
             Alternative rememberAlternative = null;
-            for (Alternative alternative : equivalenceClasse) {
+            for (Alternative alternative : equivalenceClass) {
                 if (listAlternatives.contains(alternative))
                     throw new DuplicateValueException(
                                     "you can't duplicate Alternatives");
@@ -104,6 +115,85 @@ public class CompletePreferenceImpl implements CompletePreference {
         }
         return ImmutableGraph.copyOf(Graphs.transitiveClosure(newGraph));
     }
+    
+
+    @Override
+	public int alternativeNumber(ImmutableList<ImmutableSet<Alternative>> eqClasses) {
+        int number = 0;
+        for (ImmutableSet<Alternative> set : eqClasses) {
+        	number += set.size();
+        }
+        return number;
+    }
+    
+    @Override
+	public int size(ImmutableList<ImmutableSet<Alternative>> eqClasses) {
+        Preconditions.checkNotNull(eqClasses);
+        int size = 0;
+        for (ImmutableSet<Alternative> set : eqClasses) {
+            size += 1;
+        }
+        return size;
+    }
+    
+    @Override
+    public boolean isStrict() {
+        return (alternativeNumber(equivalenceClasses) == size(equivalenceClasses));
+    }
+    
+    @Override
+	public Set<Alternative> toAlternativeSet(ImmutableList<ImmutableSet<Alternative>> eqClasses) {
+        Preconditions.checkNotNull(eqClasses);
+        Set<Alternative> set = new HashSet<>();
+        for (ImmutableSet<Alternative> sets : eqClasses) {
+            for (Alternative alter : sets) {
+                if (!set.contains(alter)) {
+                    set.add(alter);
+                }
+            }
+        }
+        return set;
+    }
+    
+    @Override
+	public boolean contains(Alternative alternative) {
+        Preconditions.checkNotNull(alternative);
+        return (toAlternativeSet(equivalenceClasses).contains(alternative));
+    }
+    
+    @Override
+	public boolean isIncludedIn(CompletePreferenceImpl completePreference) {
+        Preconditions.checkNotNull(completePreference);
+        for (Alternative alternative : toAlternativeSet(equivalenceClasses)) {
+            if (!completePreference.contains(alternative)) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    @Override
+	public boolean hasSameAlternatives(CompletePreferenceImpl completePreference) {
+        Preconditions.checkNotNull(completePreference);
+        return (this.isIncludedIn(completePreference) && completePreference.isIncludedIn(this));
+    }
+    
+    @Override
+	public LinearPreferenceImpl toStrictPreference() throws EmptySetException, DuplicateValueException {
+        if (!isStrict()) {
+            throw new IllegalArgumentException("the preference is not strict.");
+        }
+        List<Alternative> list = new ArrayList<>();
+        ImmutableList<Alternative> l = ImmutableList.copyOf(list);
+        for (ImmutableSet<Alternative> set : equivalenceClasses) {
+            for (Alternative a : set) {
+                list.add(a);
+            }
+        }
+        LOGGER.debug("list : {}", list);
+        return (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference2(voter,l,equivalenceClasses);
+    }
+    
 
     @Override
     public ImmutableSet<Alternative> getAlternatives() {
@@ -118,9 +208,9 @@ public class CompletePreferenceImpl implements CompletePreference {
     @Override
     public int getRank(Alternative a) {
         Preconditions.checkNotNull(a);
-        for (Set<Alternative> equivalenceClasse : equivalenceClasses) {
-            if (equivalenceClasse.contains(a))
-                return equivalenceClasses.indexOf(equivalenceClasse) + 1;
+        for (ImmutableSet<Alternative> equivalenceClass : equivalenceClasses) {
+            if (equivalenceClass.contains(a))
+                return equivalenceClasses.indexOf(equivalenceClass) + 1;
         }
         throw new NoSuchElementException("Alternative not found");
     }

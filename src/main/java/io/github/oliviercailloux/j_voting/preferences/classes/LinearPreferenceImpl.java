@@ -1,5 +1,7 @@
 package io.github.oliviercailloux.j_voting.preferences.classes;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -14,16 +16,15 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import io.github.oliviercailloux.j_voting.Alternative;
+import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
 import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import io.github.oliviercailloux.j_voting.preferences.interfaces.LinearPreference;
 import io.github.oliviercailloux.j_voting.preferences.interfaces.Preference;
 
-public class LinearPreferenceImpl extends CompletePreferenceImpl
-                implements LinearPreference {
-
-    ImmutableList<Alternative> list;
+public class LinearPreferenceImpl extends CompletePreferenceImpl implements LinearPreference {
+    private ImmutableList<Alternative> list;
     private static final Logger LOGGER = LoggerFactory
                     .getLogger(LinearPreferenceImpl.class.getName());
 
@@ -35,8 +36,7 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
      * @throws EmptySetException
      * @throws DuplicateValueException
      */
-    public static LinearPreference asLinearPreference(Voter voter,
-                    List<Alternative> listAlternatives)
+    public static LinearPreference asLinearPreference(Voter voter, List<Alternative> listAlternatives)
                     throws EmptySetException, DuplicateValueException {
         LOGGER.debug("LinearPreferenceImpl Factory with list of Alternatives");
         Preconditions.checkNotNull(voter);
@@ -47,6 +47,16 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
         }
         return new LinearPreferenceImpl(voter, equivalenceClasses);
     }
+    
+    public static LinearPreference asLinearPreference2(Voter voter, List<Alternative> listAlternatives, ImmutableList<ImmutableSet<Alternative>> equivalenceClasses)
+            throws EmptySetException, DuplicateValueException {
+		LOGGER.debug("LinearPreferenceImpl Factory with list of Alternatives");
+		Preconditions.checkNotNull(voter);
+		Preconditions.checkNotNull(listAlternatives);
+		Preconditions.checkNotNull(equivalenceClasses);
+
+		return new LinearPreferenceImpl(voter, listAlternatives, equivalenceClasses);
+	}
 
     /**
      * 
@@ -55,19 +65,76 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
      * @throws EmptySetException
      * @throws DuplicateValueException
      */
-    private LinearPreferenceImpl(Voter voter,
-                    List<Set<Alternative>> equivalenceClasses)
+    private LinearPreferenceImpl(Voter voter, List<Set<Alternative>> equivalenceClasses)
                     throws EmptySetException, DuplicateValueException {
         super(voter, equivalenceClasses);
         List<Alternative> tmpList = Lists.newArrayList();
         for (Set<Alternative> equivalenceClass : equivalenceClasses) {
-            Alternative alternative = Iterables
-                            .getOnlyElement(equivalenceClass);
+            Alternative alternative = Iterables.getOnlyElement(equivalenceClass);
             tmpList.add(alternative);
         }
         this.list = ImmutableList.copyOf(tmpList);
     }
-
+    
+    
+    private LinearPreferenceImpl(Voter voter, List<Alternative> listAlternatives, ImmutableList<ImmutableSet<Alternative>> equivalenceClasses)
+            throws EmptySetException, DuplicateValueException {
+		super(voter, equivalenceClasses);
+		
+		this.list = ImmutableList.copyOf(listAlternatives);
+	}
+    
+    /**
+     * @param alternativeList a list of alternatives not <code> null </code>
+     * @return a list of set of alternatives. each set is composed of one
+     *         alternative
+     */
+	public static List<Set<Alternative>> listAlternativeToListSetAlternative(List<Alternative> alternativeList) {
+        Preconditions.checkNotNull(alternativeList);
+        List<Set<Alternative>> list = new ArrayList<>();
+        for (Alternative a : alternativeList) {
+            Set<Alternative> set = new HashSet<>();
+            set.add(a);
+            list.add(set);
+        }
+        return list;
+    }
+        
+    /**
+     * Factory method for StrictCompletePreferenceImpl
+     * 
+     * @param preference an ImmutableList of Alternatives
+     * @param voter a Voter
+     * @return a new StrictCompletePreferenceImpl
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
+     */
+	public static LinearPreferenceImpl createStrictCompletePreferenceImpl(Voter voter, ImmutableList<Alternative> preference) throws EmptySetException, DuplicateValueException {
+        return new LinearPreferenceImpl(voter, listAlternativeToListSetAlternative(preference));
+    }
+	
+	@Override
+	public int sizeLinear(ImmutableList<Alternative> alternativeList) {
+		int size = 0;
+		for(Alternative alternative : alternativeList) {
+			size += 1;
+		}
+		return size;
+	}
+	
+    /**
+     * 
+     * @param rank not <code>null</code>
+     * @return the alternative at the position given in the strict preference
+     */
+    public Alternative getAlternative(Integer rank) {
+        Preconditions.checkNotNull(rank);
+        if (rank >= this.sizeLinear(this.list)) {
+            throw new IndexOutOfBoundsException("This position doesn't exist in the Preference");
+        }
+        return list.get(rank);
+    }
+    
     @Override
     public ImmutableList<Alternative> asList() {
         return this.list;

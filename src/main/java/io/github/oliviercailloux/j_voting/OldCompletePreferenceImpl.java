@@ -192,7 +192,7 @@ public class OldCompletePreferenceImpl {
     /**
      * 
      * @param list not <code> null </code>
-     * @return the size of a list of alternative sets
+     * @return the number of alternatives in the list of sets ( it means the addition of all the sets size)
      */
     public static int size(List<Set<Alternative>> list) {
         LOGGER.debug("list set alternative size:");

@@ -9,7 +9,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 
+import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
 import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
@@ -52,7 +54,33 @@ class LinearPreferenceImplTest {
                                         ImmutableList.of(null)));
         assertThrows(Exception.class, () -> LinearPreferenceImpl
                         .asLinearPreference(v1, null));
-        assertThrows(Exception.class, () -> LinearPreferenceImpl
-                        .asLinearPreference(null, ImmutableList.of(null)));
+        
     }
+
+    @Test
+    void sizeLinearTest() throws EmptySetException, DuplicateValueException {
+        LinearPreference toTest = getListedAlternatives();
+        assertEquals(3, toTest.sizeLinear(toTest.asList()));
+    }
+    
+    @Test
+    void createStrictCompletePreferenceTest() throws EmptySetException, DuplicateValueException {
+        LinearPreferenceImpl toTest = (LinearPreferenceImpl) getListedAlternatives();
+        Voter v = Voter.createVoter(3);
+        assertEquals(toTest, LinearPreferenceImpl.createStrictCompletePreferenceImpl(v,toTest.asList()));
+    }
+    
+    @Test
+    void getAlternativeTest() throws EmptySetException, DuplicateValueException { 
+    	LinearPreferenceImpl toTest = (LinearPreferenceImpl) getListedAlternatives();
+    	assertEquals(a2,toTest.getAlternative(2));
+    }
+    
+    @Test 
+    void listAlternativeToListSetAlternativeTest() throws EmptySetException, DuplicateValueException { 
+    	ImmutableList<ImmutableSet<Alternative>> toTest = ImmutableList.of(ImmutableSet.of(a1), ImmutableSet.of(a3),ImmutableSet.of(a2));
+    	LinearPreferenceImpl toTest2 = (LinearPreferenceImpl) getListedAlternatives();
+    	assertEquals(toTest,LinearPreferenceImpl.listAlternativeToListSetAlternative(toTest2.asList()));
+    }
+    
 }
