@@ -13,7 +13,7 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
@@ -38,7 +38,7 @@ public class ImmutableProfileI implements ProfileI {
     @Override
     public OldCompletePreferenceImpl getPreference(Voter v) {
         LOGGER.debug("getPreference:");
-        Preconditions.checkNotNull(v);
+        checkNotNull(v);
         LOGGER.debug("parameter voter : {}", v);
         if (votes.containsKey(v)) {
             return votes.get(v);
@@ -137,7 +137,7 @@ public class ImmutableProfileI implements ProfileI {
     @Override
     public int getNbVoterForPreference(OldCompletePreferenceImpl p) {
         LOGGER.debug("getnbVoterByPreference:");
-        Preconditions.checkNotNull(p);
+        checkNotNull(p);
         LOGGER.debug("parameter preference: {}", p);
         int nb = 0;
         for (OldCompletePreferenceImpl p1 : votes.values()) {
@@ -195,7 +195,7 @@ public class ImmutableProfileI implements ProfileI {
     public static Map<Voter, ? extends OldCompletePreferenceImpl> checkCompleteMap(
                     Map<Voter, ? extends OldCompletePreferenceImpl> map) {
         LOGGER.debug("checkCompleteMap:");
-        Preconditions.checkNotNull(map);
+        checkNotNull(map);
         if (!createImmutableProfileI(map).isComplete()) {
             throw new IllegalArgumentException("map is incomplete");
         }
@@ -211,7 +211,7 @@ public class ImmutableProfileI implements ProfileI {
     public static Map<Voter, ? extends OldCompletePreferenceImpl> checkStrictMap(
                     Map<Voter, ? extends OldCompletePreferenceImpl> map) {
         LOGGER.debug("checkstrictMap:");
-        Preconditions.checkNotNull(map);
+        checkNotNull(map);
         if (!createImmutableProfileI(map).isStrict()) {
             throw new IllegalArgumentException("map is not strict");
         }
@@ -227,7 +227,7 @@ public class ImmutableProfileI implements ProfileI {
     public static ImmutableProfileI createImmutableProfileI(
                     Map<Voter, ? extends OldCompletePreferenceImpl> votes) {
         LOGGER.debug("Factory ImmutableProfileI");
-        Preconditions.checkNotNull(votes);
+        checkNotNull(votes);
         return new ImmutableProfileI(votes);
     }
 
