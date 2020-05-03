@@ -8,6 +8,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import org.junit.jupiter.api.Test;
 
 import io.github.oliviercailloux.j_voting.Alternative;
@@ -21,26 +22,27 @@ import io.github.oliviercailloux.j_voting.profiles.management.StrictProfileBuild
 public class ReadProfileTest {
 
     @Test
-    public void testGetPreferences() {
+    public void testGetPreferences() throws Exception {
         ReadProfile rp = new ReadProfile();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
+        Voter v1 = Voter.createVoter(1);
         List<Alternative> alternatives = new ArrayList<>();
         alternatives.add(a1);
         alternatives.add(a2);
         alternatives.add(a3);
-        OldLinearPreferenceImpl pref = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives);
         List<Alternative> alternatives2 = new ArrayList<>();
         alternatives2.add(a2);
         alternatives2.add(a1);
         alternatives2.add(a3);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives2);
-        assertEquals(pref, rp.getPreferences(pref2, "4,1,2,3"));
+        LinearPreferenceImpl pref2V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives2);
+        assertEquals(pref1V1, rp.getPreferences(pref2V1, "4,1,2,3"));
     }
 
     @Test
-    public void testAddVotes() {
+    public void testAddVotes() throws Exception {
         StrictProfileBuilder p = StrictProfileBuilder.createStrictProfileBuilder();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
@@ -51,13 +53,14 @@ public class ReadProfileTest {
         alternatives.add(a1);
         alternatives.add(a2);
         alternatives.add(a3);
-        OldLinearPreferenceImpl pref = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives);
-        p.addVotes(pref, 2);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives);
+        LinearPreferenceImpl pref1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, alternatives);
+        p.addVotes(pref1V1, 2);
         StrictProfileI prof = p.createStrictProfileI();
         assertTrue(prof.getProfile().containsKey(v1));
         assertTrue(prof.getProfile().containsKey(v2));
-        assertEquals(prof.getPreference(v1), pref);
-        assertEquals(prof.getPreference(v2), pref);
+        assertEquals(prof.getPreference(v1), pref1V1);
+        assertEquals(prof.getPreference(v2), pref1V1);
     }
 
     @Test
@@ -92,7 +95,7 @@ public class ReadProfileTest {
     }
 
     @Test
-    public void testCreateProfileFromStream() throws IOException {
+    public void testCreateProfileFromStream() throws Exception {
         ReadProfile rp = new ReadProfile();
         ProfileI profile = rp.createProfileFromStream(
                         getClass().getResourceAsStream("profileToRead.soc"));

@@ -5,13 +5,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.interfaces.LinearPreference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.interfaces.CompletePreference;
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableStrictProfileI;
@@ -71,7 +76,7 @@ public class StrictProfileBuilder extends ProfileBuilder {
      *             IllegalArgumentException.
      */
     @Override
-    public void addVote(Voter v, OldCompletePreferenceImpl pref) {
+    public void addVote(Voter v, CompletePreferenceImpl pref) {
         LOGGER.debug("addProfile:");
         Preconditions.checkNotNull(v);
         Preconditions.checkNotNull(pref);
@@ -86,16 +91,17 @@ public class StrictProfileBuilder extends ProfileBuilder {
     /**
      * From a StrictProfileI, creates an ImmutableStrictProfileI where only the
      * first alternative of each preference is taken into account.
-     * 
+     * @throws EmptySetException  if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      * @return
      */
-    public ImmutableStrictProfileI createOneAlternativeProfile() {
+    public ImmutableStrictProfileI createOneAlternativeProfile() throws DuplicateValueException, EmptySetException {
         LOGGER.debug("createOneAlternativeProfile");
         for (Voter v : votes.keySet()) {
             List<Alternative> alters = new ArrayList<>();
-            alters.add(votes.get(v).getAlternative(0));
-            OldLinearPreferenceImpl prefOneAlter = OldLinearPreferenceImpl
-                            .createStrictCompletePreferenceImpl(alters);
+            alters.add(votes.get(v).getAlternatives().asList().get(0));
+            LinearPreferenceImpl prefOneAlter = (LinearPreferenceImpl) LinearPreferenceImpl
+                            .asLinearPreference(v, alters);
             addVote(v, prefOneAlter);
         }
         return ImmutableStrictProfileI.createImmutableStrictProfileI(votes);

@@ -164,8 +164,8 @@ public class ReadProfile {
      * @return a StrictProfile
      * @throws IOException
      * @throws URISyntaxException
-     * @throws DuplicateValueException
-     * @throws EmptySetException
+     * @throws EmptySetException if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      */
     public ProfileI createProfileFromURL(URL url) throws IOException, DuplicateValueException, EmptySetException {
         LOGGER.debug("CreateProfileFromURL : ");
@@ -206,6 +206,8 @@ public class ReadProfile {
      *                      containing an alternative
      * @return the Alternatives, in the list of strings, given as a
      *         StrictPreference.
+     * @throws EmptySetException if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      */
     private LinearPreferenceImpl getAlternatives(List<String> listOfStrings) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("GetAlternatives :");
@@ -247,10 +249,12 @@ public class ReadProfile {
      *                          containing the number of voters for a preference
      *                          followed by the preference (list of
      *                          alternatives)
+     * @throws EmptySetException if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      * @return the StrictPreference given in the line s1
      */
     public LinearPreferenceImpl getPreferences(LinearPreferenceImpl listeAlternatives,
-                    String s1) {
+                    String s1) throws DuplicateValueException, EmptySetException{
         LOGGER.debug("GetPreferences");
         Preconditions.checkNotNull(listeAlternatives);
         Preconditions.checkNotNull(s1);
@@ -271,7 +275,8 @@ public class ReadProfile {
                                 "The line s1 contains an alternative that is not in the profile's alternatives");
             }
         }
-        return LinearPreferenceImpl.asLinearPreference(pref);
+        Voter voterToManipulatePref = Voter.createVoter(1);
+        return (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(voterToManipulatePref, pref);
     }
 
     /**
@@ -279,6 +284,8 @@ public class ReadProfile {
      * @param stringPreference not <code>null</null>
      * @return the strictPreference in the string. The string only contains the
      *         alternatives.
+     * @throws EmptySetException if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      */
     public LinearPreferenceImpl createStrictPreferenceFrom(Voter v,
                     String stringPreference) throws EmptySetException, DuplicateValueException{
@@ -303,10 +310,12 @@ public class ReadProfile {
      * @param listAlternatives <code>not null</code> the alternatives of the
      *                         profile
      * @param nbVoters         <code>not null</code> the number of voters
+     * @throws DuplicateValueException
+     * @throws EmptySetException
      * @return the created StrictProfile
      */
     public ProfileI buildProfile(List<String> file,
-                    LinearPreferenceImpl listAlternatives, int nbVoters) {
+                    LinearPreferenceImpl listAlternatives, int nbVoters) throws DuplicateValueException, EmptySetException {
         LOGGER.debug("BuildProfiles :");
         Preconditions.checkNotNull(file);
         Preconditions.checkNotNull(listAlternatives);
