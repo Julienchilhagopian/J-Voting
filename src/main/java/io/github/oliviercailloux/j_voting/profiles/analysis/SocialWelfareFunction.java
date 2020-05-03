@@ -1,6 +1,9 @@
 package io.github.oliviercailloux.j_voting.profiles.analysis;
 
 import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableProfileI;
 
 public interface SocialWelfareFunction {
@@ -11,5 +14,5 @@ public interface SocialWelfareFunction {
      * @return a Preference with the society's preference from the profile. This
      *         Preference cannot be empty.
      */
-    public OldCompletePreferenceImpl getSocietyPreference(ImmutableProfileI profile);
+    public CompletePreferenceImpl getSocietyPreference(ImmutableProfileI profile) throws DuplicateValueException, EmptySetException;
 }

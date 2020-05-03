@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,7 +16,7 @@ import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableProfileI;
 import io.github.oliviercailloux.j_voting.profiles.ProfileI;
@@ -65,8 +67,8 @@ public class Borda implements SocialWelfareFunction {
      * @return a Preference with the alternatives sorted
      */
     @Override
-    public OldCompletePreferenceImpl getSocietyPreference(
-                    ImmutableProfileI profile) {
+    public CompletePreferenceImpl getSocietyPreference(
+                    ImmutableProfileI profile) throws DuplicateValueException, EmptySetException {
         LOGGER.debug("getSocietyStrictPreference");
         Preconditions.checkNotNull(profile);
         LOGGER.debug("parameter SProfile : {}", profile);
@@ -82,8 +84,9 @@ public class Borda implements SocialWelfareFunction {
                 tempscores.remove(a, tempscores.count(a));
             }
         }
-        OldCompletePreferenceImpl pref = OldCompletePreferenceImpl
-                        .createCompletePreferenceImpl(al);
+        Voter society = Voter.createVoter(1);
+        CompletePreferenceImpl pref = (CompletePreferenceImpl) CompletePreferenceImpl
+                        .asCompletePreference(society, al);
         LOGGER.debug("return AScores : {}", pref);
         return pref;
     }
@@ -95,14 +98,13 @@ public class Borda implements SocialWelfareFunction {
      *              the preference to the multiset for the alternatives in this
      *              StrictPreference
      */
-    public void setScores(OldCompletePreferenceImpl pref) {
+    public void setScores(CompletePreferenceImpl pref) {
         LOGGER.debug("getScorePref");
         Preconditions.checkNotNull(pref);
         LOGGER.debug("parameter SPref : {}", pref);
-        int size = pref.getPreferencesNonStrict().size();
-        for (Alternative a : OldCompletePreferenceImpl
-                        .toAlternativeSet(pref.getPreferencesNonStrict())) {
-            scores.add(a, size - pref.getAlternativeRank(a) + 1);
+        int size = pref.asEquivalenceClasses().size();
+        for (Alternative a : pref.getAlternatives()) {
+            scores.add(a, size - pref.getRank(a) + 1);
         }
         LOGGER.debug("return score : {}", scores);
     }

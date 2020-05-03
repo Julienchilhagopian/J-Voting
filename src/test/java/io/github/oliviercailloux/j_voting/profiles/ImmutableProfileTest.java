@@ -9,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import org.junit.jupiter.api.Test;
 
 import io.github.oliviercailloux.j_voting.Alternative;
@@ -18,8 +21,8 @@ import io.github.oliviercailloux.j_voting.profiles.ImmutableProfile;
 
 public class ImmutableProfileTest {
 
-    public static ImmutableProfile createIPToTest() {
-        Map<Voter, OldCompletePreferenceImpl> profile = new HashMap<>();
+    public static ImmutableProfile createIPToTest() throws EmptySetException, DuplicateValueException {
+        Map<Voter, CompletePreferenceImpl> profile = new HashMap<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -45,24 +48,28 @@ public class ImmutableProfileTest {
         list1.add(s2);
         list2.add(s3);
         list2.add(s4);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
-        OldCompletePreferenceImpl pref2 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list2);
-        profile.put(v1, pref1);
-        profile.put(v2, pref1);
-        profile.put(v3, pref1);
-        profile.put(v4, pref1);
-        profile.put(v5, pref2);
-        profile.put(v6, pref2);
+        CompletePreferenceImpl pref1V1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1, list1);
+        CompletePreferenceImpl pref1V2 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v2, list1);
+        CompletePreferenceImpl pref1V3 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v3, list1);
+        CompletePreferenceImpl pref1V4 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v4, list1);
+        CompletePreferenceImpl pref2V5 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v5, list2);
+        CompletePreferenceImpl pref2V6 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v6, list2);
+        profile.put(v1, pref1V1);
+        profile.put(v2, pref1V2);
+        profile.put(v3, pref1V3);
+        profile.put(v4, pref1V4);
+        profile.put(v5, pref2V5);
+        profile.put(v6, pref2V6);
         return ImmutableProfile.createImmutableProfile(profile);
     }
 
     @Test
-    public void testGetNbAlternatives() {
+    public void testGetNbAlternatives() throws Exception {
         assertEquals(createIPToTest().getNbAlternatives(), 3);
     }
 
     @Test
-    public void testGetAlternatives() {
+    public void testGetAlternatives() throws Exception {
         Set<Alternative> alters = new HashSet<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
