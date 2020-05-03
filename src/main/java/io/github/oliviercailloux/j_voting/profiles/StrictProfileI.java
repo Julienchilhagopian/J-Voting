@@ -6,6 +6,7 @@ import java.util.List;
 
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 
 /**
  * A StrictProfileI represents an incomplete StrictProfile. The preferences are
@@ -20,7 +21,7 @@ public interface StrictProfileI extends ProfileI {
      * @return the StrictPreference of the voter v in the profile.
      */
     @Override
-    public OldLinearPreferenceImpl getPreference(Voter v);
+    public LinearPreferenceImpl getPreference(Voter v);
 
     @Override
     public default boolean isStrict() {
