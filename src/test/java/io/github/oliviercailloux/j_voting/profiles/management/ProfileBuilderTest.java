@@ -34,7 +34,7 @@ import io.github.oliviercailloux.j_voting.profiles.management.ProfileBuilder;
 public class ProfileBuilderTest {
 
     @Test
-    public void testCreateProfileI() throws DuplicateValueException, EmptySetException {
+    public void testCreateProfileI() throws Exception {
         // ---beginning of creation of a ProfileI with ProfileBuilder
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
         Alternative a1 = Alternative.withId(1);
