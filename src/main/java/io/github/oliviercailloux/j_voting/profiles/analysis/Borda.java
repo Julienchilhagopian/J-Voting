@@ -65,10 +65,11 @@ public class Borda implements SocialWelfareFunction {
     /**
      * @param profile a ProfileI <code>not null</code>
      * @return a Preference with the alternatives sorted
+     * @throws Exception 
      */
     @Override
     public CompletePreferenceImpl getSocietyPreference(
-                    ImmutableProfileI profile) throws DuplicateValueException, EmptySetException {
+                    ImmutableProfileI profile) throws Exception {
         LOGGER.debug("getSocietyStrictPreference");
         Preconditions.checkNotNull(profile);
         LOGGER.debug("parameter SProfile : {}", profile);
@@ -115,7 +116,7 @@ public class Borda implements SocialWelfareFunction {
      *                multiset for the profile (if an alternative has a score of
      *                3, it ill appear three times in the multiset)
      */
-    public void setScores(ProfileI profile) {
+    public void setScores(ProfileI profile) throws Exception {
         LOGGER.debug("getScoreProf");
         Preconditions.checkNotNull(profile);
         LOGGER.debug("parameter SProfile : {}", profile);

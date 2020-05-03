@@ -5,7 +5,9 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableProfileI;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableStrictProfileI;
 import io.github.oliviercailloux.j_voting.profiles.StrictProfileI;
@@ -24,7 +26,7 @@ public class OldFrenchElection implements SocialWelfareFunction {
                     .getLogger(OldFrenchElection.class.getName());
 
     @Override
-    public OldCompletePreferenceImpl getSocietyPreference(ImmutableProfileI profile) {
+    public CompletePreferenceImpl getSocietyPreference(ImmutableProfileI profile) throws Exception {
         LOGGER.debug("getSocietyPreference");
         Preconditions.checkNotNull(profile);
         if (!profile.isStrict()) {

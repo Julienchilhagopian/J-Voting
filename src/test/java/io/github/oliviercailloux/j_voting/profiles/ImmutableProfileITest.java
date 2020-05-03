@@ -12,8 +12,7 @@ import java.util.NavigableSet;
 import java.util.Set;
 import java.util.TreeSet;
 
-import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
-import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+
 import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.preferences.interfaces.CompletePreference;
 import io.github.oliviercailloux.j_voting.preferences.interfaces.ImmutablePreference;
@@ -29,7 +28,7 @@ import io.github.oliviercailloux.j_voting.profiles.management.ProfileBuilder;
 
 public class ImmutableProfileITest {
 
-    public static ImmutableProfileI createIPIToTest() throws EmptySetException, DuplicateValueException {
+    public static ImmutableProfileI createIPIToTest() throws Exception {
         Map<Voter, CompletePreferenceImpl> profile = new HashMap<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);

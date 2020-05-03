@@ -14,5 +14,5 @@ public interface SocialWelfareFunction {
      * @return a Preference with the society's preference from the profile. This
      *         Preference cannot be empty.
      */
-    public CompletePreferenceImpl getSocietyPreference(ImmutableProfileI profile) throws DuplicateValueException, EmptySetException;
+    public CompletePreferenceImpl getSocietyPreference(ImmutableProfileI profile) throws Exception;
 }
