@@ -7,8 +7,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableProfileI;
 
 /**
@@ -42,10 +44,11 @@ public class Dictator implements SocialWelfareFunction {
      * 
      * @param profile
      * @return the dictator's preference
+     * @throws Exception 
      */
     @Override
-    public OldCompletePreferenceImpl getSocietyPreference(
-                    ImmutableProfileI profile) {
+    public CompletePreferenceImpl getSocietyPreference(
+                    ImmutableProfileI profile) throws Exception {
         LOGGER.debug("getSocietyStrictPreference");
         Preconditions.checkNotNull(profile);
         Preconditions.checkArgument(profile.getProfile().containsKey(dictator));
