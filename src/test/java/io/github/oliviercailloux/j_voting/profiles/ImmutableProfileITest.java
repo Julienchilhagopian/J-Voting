@@ -175,10 +175,10 @@ public class ImmutableProfileITest {
         for (CompletePreferenceImpl p : createIPIToTest().getUniquePreferences()) {
             preferencelist.add(p);
         }
-        boolean case1 = preferencelist.get(0).equals(pref1V1)
-                        && preferencelist.get(1).equals(pref2V1);
-        boolean case2 = preferencelist.get(0).equals(pref2V1)
-                        && preferencelist.get(1).equals(pref1V1);
+        boolean case1 = preferencelist.get(0).asEquivalenceClasses().equals(pref1V1.asEquivalenceClasses())
+                        && preferencelist.get(1).asEquivalenceClasses().equals(pref2V1.asEquivalenceClasses());
+        boolean case2 = preferencelist.get(0).asEquivalenceClasses().equals(pref2V1.asEquivalenceClasses())
+                        && preferencelist.get(1).asEquivalenceClasses().equals(pref1V1.asEquivalenceClasses());
         assertTrue(case1 || case2);
     }
 

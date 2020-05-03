@@ -10,6 +10,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
 import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,10 +95,12 @@ public class ImmutableProfileI implements ProfileI {
     @Override
     public Set<CompletePreferenceImpl> getUniquePreferences() {
         LOGGER.debug("getUniquePreferences");
+        Set<ImmutableList<ImmutableSet<Alternative>>> eqClassesSet = new LinkedHashSet<>();
         Set<CompletePreferenceImpl> unique = new LinkedHashSet<>();
         for (CompletePreferenceImpl pref : votes.values()) {
-            LOGGER.debug("next preference : {}", pref);
-            unique.add(pref);
+            if(eqClassesSet.add(pref.asEquivalenceClasses())) {
+                unique.add(pref);
+            }
         }
         return unique;
     }
@@ -142,7 +146,7 @@ public class ImmutableProfileI implements ProfileI {
         LOGGER.debug("parameter preference: {}", p);
         int nb = 0;
         for (CompletePreferenceImpl p1 : votes.values()) {
-            if (p.equals(p1)) {
+            if (p.asEquivalenceClasses().equals(p1.asEquivalenceClasses())) {
                 nb++;
             }
         }
