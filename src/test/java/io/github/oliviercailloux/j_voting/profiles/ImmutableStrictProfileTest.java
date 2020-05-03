@@ -43,12 +43,12 @@ public class ImmutableStrictProfileTest {
         list2.add(a3);
         list2.add(a2);
         list2.add(a1);
-        LinearPreferenceImpl p1V1 = LinearPreferenceImpl.asLinearPreference(v1, list1);
-        LinearPreferenceImpl p1V2 = LinearPreferenceImpl.asLinearPreference(v2, list1);
-        LinearPreferenceImpl p1V3 = LinearPreferenceImpl.asLinearPreference(v3, list1);
-        LinearPreferenceImpl p1V4 = LinearPreferenceImpl.asLinearPreference(v4, list1);
-        LinearPreferenceImpl p2V5 = LinearPreferenceImpl.asLinearPreference(v6, list2);
-        LinearPreferenceImpl p2V6 = LinearPreferenceImpl.asLinearPreference(v6, list2);
+        LinearPreferenceImpl p1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl p1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl p1V3 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl p1V4 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v4, list1);
+        LinearPreferenceImpl p2V5 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
+        LinearPreferenceImpl p2V6 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
 
         profile.put(v1, p1V1);
         profile.put(v2, p1V2);

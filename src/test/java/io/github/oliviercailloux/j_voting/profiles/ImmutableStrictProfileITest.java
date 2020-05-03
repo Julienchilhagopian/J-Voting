@@ -45,12 +45,12 @@ public class ImmutableStrictProfileITest {
         list1.add(a3);
         list2.add(a3);
         list2.add(a2);
-        LinearPreferenceImpl pref1V1 = LinearPreferenceImpl.asLinearPreference(v1, list1);
-        LinearPreferenceImpl pref1V2 = LinearPreferenceImpl.asLinearPreference(v2, list1);
-        LinearPreferenceImpl pref1V3 = LinearPreferenceImpl.asLinearPreference(v3, list1);
-        LinearPreferenceImpl pref1V4 = LinearPreferenceImpl.asLinearPreference(v4, list1);
-        LinearPreferenceImpl pref2V5 = LinearPreferenceImpl.asLinearPreference(v6, list2);
-        LinearPreferenceImpl pref2V6 = LinearPreferenceImpl.asLinearPreference(v6, list2);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl pref1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl pref1V3 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl pref1V4 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v4, list1);
+        LinearPreferenceImpl pref2V5 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
+        LinearPreferenceImpl pref2V6 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
         profile.put(v1, pref1V1);
         profile.put(v2, pref1V2);
         profile.put(v3, pref1V3);
@@ -119,9 +119,9 @@ public class ImmutableStrictProfileITest {
         list2.add(a3);
         list2.add(a2);
         list2.add(a1);
-        LinearPreferenceImpl p1V1 = LinearPreferenceImpl.asLinearPreference(v1, list1);
-        LinearPreferenceImpl p1V2 = LinearPreferenceImpl.asLinearPreference(v2, list1);
-        LinearPreferenceImpl p2V3 = LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl p1V1 = (LinearPreferenceImpl)LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl p1V2 = (LinearPreferenceImpl)LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl p2V3 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v3, list1);
         map.put(v1, p1V1);
         map.put(v2, p1V2);
         map.put(v3, p2V3);
@@ -138,7 +138,7 @@ public class ImmutableStrictProfileITest {
         list1.add(a1);
         list1.add(a2);
         list1.add(a3);
-        LinearPreferenceImpl pref1 = LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl pref1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, list1);
         assertEquals(pref1, createISPIToTest().getPreference(v1));
     }
 }
