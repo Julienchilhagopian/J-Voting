@@ -15,6 +15,8 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.core.Response;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.slf4j.Logger;
@@ -26,7 +28,7 @@ import com.google.common.collect.Iterables;
 import com.google.common.io.CharStreams;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.profiles.ProfileI;
 
@@ -49,8 +51,10 @@ public class ReadProfile {
      *           to be extracted. InputStream is closed in this method.
      * @return sProfile a StrictProfile
      * @throws IOException
+     * @throws DuplicateValueException
+     * @throws EmptySetException
      */
-    public ProfileI createProfileFromStream(InputStream is) throws IOException {
+    public ProfileI createProfileFromStream(InputStream is) throws IOException, DuplicateValueException, EmptySetException {
         LOGGER.debug("CreateProfileFromReadFile : ");
         Preconditions.checkNotNull(is);
         try (InputStreamReader isr = new InputStreamReader(is,
@@ -86,7 +90,7 @@ public class ReadProfile {
             }
             LOGGER.debug("lines with the number of votes for each StrictPreference : {}",
                             profiles);
-            OldLinearPreferenceImpl listeAlternatives = getAlternatives(alternatives);
+            LinearPreferenceImpl listeAlternatives = getAlternatives(alternatives);
             List<Integer> listInt = getStatsVoters(lineNbVoters);
             return buildProfile(profiles, listeAlternatives, listInt.get(0));
         }
@@ -97,7 +101,7 @@ public class ReadProfile {
      * @param table not <code>null</code> a Table displayed as Voters in columns
      * @return a restricted ProfileI
      */
-    public ProfileI createProfileFromColumnsTable(Table table) {
+    public ProfileI createProfileFromColumnsTable(Table table) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("createProfileFromColumnsTable : ");
         Preconditions.checkNotNull(table);
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
@@ -114,8 +118,8 @@ public class ReadProfile {
                 }
             }
             Voter voter = Voter.createVoter(column + 1);
-            OldLinearPreferenceImpl newPref = new ReadProfile()
-                            .createStrictPreferenceFrom(
+            LinearPreferenceImpl newPref = new ReadProfile()
+                            .createStrictPreferenceFrom(voter,
                                             newPrefString.toString());
             profileBuilder.addVote(voter, newPref);
         }
@@ -127,7 +131,7 @@ public class ReadProfile {
      * @param table <code>null</code> a Table displayed as Voters in rows
      * @return a restricted ProfileI
      */
-    public ProfileI createProfileFromRowsTable(Table table) {
+    public ProfileI createProfileFromRowsTable(Table table) throws EmptySetException, DuplicateValueException{
         LOGGER.debug("createProfileFromRowsTable : ");
         Preconditions.checkNotNull(table);
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
@@ -143,8 +147,8 @@ public class ReadProfile {
                 }
             }
             Voter voter = Voter.createVoter(item + 1);
-            OldLinearPreferenceImpl newPref = new ReadProfile()
-                            .createStrictPreferenceFrom(
+            LinearPreferenceImpl newPref = new ReadProfile()
+                            .createStrictPreferenceFrom(voter,
                                             newPrefString.toString());
             profileBuilder.addVote(voter, newPref);
         }
@@ -160,8 +164,10 @@ public class ReadProfile {
      * @return a StrictProfile
      * @throws IOException
      * @throws URISyntaxException
+     * @throws DuplicateValueException
+     * @throws EmptySetException
      */
-    public ProfileI createProfileFromURL(URL url) throws IOException {
+    public ProfileI createProfileFromURL(URL url) throws IOException, DuplicateValueException, EmptySetException {
         LOGGER.debug("CreateProfileFromURL : ");
         Preconditions.checkNotNull(url);
         LOGGER.debug("parameter : URL = {}", url);
@@ -201,7 +207,7 @@ public class ReadProfile {
      * @return the Alternatives, in the list of strings, given as a
      *         StrictPreference.
      */
-    private OldLinearPreferenceImpl getAlternatives(List<String> listOfStrings) {
+    private LinearPreferenceImpl getAlternatives(List<String> listOfStrings) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("GetAlternatives :");
         Preconditions.checkNotNull(listOfStrings);
         LOGGER.debug("parameter : file = {}", listOfStrings);
@@ -210,7 +216,8 @@ public class ReadProfile {
             LOGGER.debug("next Alternative : {}", alternative);
             alternatives.add(Alternative.withId(Integer.parseInt(alternative)));
         }
-        OldLinearPreferenceImpl listAlternatives = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives);
+        Voter voterToManipulatePref = Voter.createVoter(1);
+        LinearPreferenceImpl listAlternatives = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(voterToManipulatePref, alternatives);
         LOGGER.debug("returns listAlternatives : {}", listAlternatives);
         return listAlternatives;
     }
@@ -242,7 +249,7 @@ public class ReadProfile {
      *                          alternatives)
      * @return the StrictPreference given in the line s1
      */
-    public OldLinearPreferenceImpl getPreferences(OldLinearPreferenceImpl listeAlternatives,
+    public LinearPreferenceImpl getPreferences(LinearPreferenceImpl listeAlternatives,
                     String s1) {
         LOGGER.debug("GetPreferences");
         Preconditions.checkNotNull(listeAlternatives);
@@ -255,7 +262,7 @@ public class ReadProfile {
                         1)) {
             Alternative alter = Alternative.withId(Integer.parseInt(alternative.trim()));
             LOGGER.debug("next alternative {}", alter.getId());
-            if (listeAlternatives.contains(alter)) {
+            if (listeAlternatives.getAlternatives().contains(alter)) {
                 LOGGER.debug("correct alternative");
                 pref.add(alter);
             } else {
@@ -264,7 +271,7 @@ public class ReadProfile {
                                 "The line s1 contains an alternative that is not in the profile's alternatives");
             }
         }
-        return OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(pref);
+        return LinearPreferenceImpl.asLinearPreference(pref);
     }
 
     /**
@@ -273,8 +280,8 @@ public class ReadProfile {
      * @return the strictPreference in the string. The string only contains the
      *         alternatives.
      */
-    public OldLinearPreferenceImpl createStrictPreferenceFrom(
-                    String stringPreference) {
+    public LinearPreferenceImpl createStrictPreferenceFrom(Voter v,
+                    String stringPreference) throws EmptySetException, DuplicateValueException{
         LOGGER.debug("GetPreferences");
         Preconditions.checkNotNull(stringPreference);
         LOGGER.debug("parameters : s1 {}", stringPreference);
@@ -287,7 +294,7 @@ public class ReadProfile {
         }
         if (pref.isEmpty())
             throw new IllegalArgumentException("The preference is empty.");
-        return OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(pref);
+        return (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v, pref);
     }
 
     /**
@@ -299,7 +306,7 @@ public class ReadProfile {
      * @return the created StrictProfile
      */
     public ProfileI buildProfile(List<String> file,
-                    OldLinearPreferenceImpl listAlternatives, int nbVoters) {
+                    LinearPreferenceImpl listAlternatives, int nbVoters) {
         LOGGER.debug("BuildProfiles :");
         Preconditions.checkNotNull(file);
         Preconditions.checkNotNull(listAlternatives);
@@ -313,7 +320,7 @@ public class ReadProfile {
                                 "the first string of file is an alternative line.");
             }
             String[] lineAsArray = line.split(",");
-            OldLinearPreferenceImpl pref = getPreferences(listAlternatives, line);
+            LinearPreferenceImpl pref = getPreferences(listAlternatives, line);
             LOGGER.debug("to add : {} votes for the StrictPreference {}",
                             lineAsArray[0].trim(), pref);
             profile.addVotes(pref, Integer.parseInt(lineAsArray[0].trim()));

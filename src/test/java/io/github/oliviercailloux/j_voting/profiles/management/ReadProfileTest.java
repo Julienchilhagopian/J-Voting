@@ -121,7 +121,7 @@ public class ReadProfileTest {
     }
 
     @Test
-    public void testCreateProfileFromURL() throws IOException {
+    public void testCreateProfileFromURL() throws Exception {
         ReadProfile rp = new ReadProfile();
         String fileURLAsString = "https://raw.githubusercontent.com/Perciii/J-Voting/master/src/test/resources/io/github/oliviercailloux/y2018/j_voting/profiles/management/profileToRead.soc";
         ProfileI profile = rp.createProfileFromURL(new URL(fileURLAsString));
