@@ -13,6 +13,10 @@ import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableStrictProfileI;
 import io.github.oliviercailloux.j_voting.profiles.analysis.OldFrenchElection;
 import io.github.oliviercailloux.j_voting.profiles.management.StrictProfileBuilder;
@@ -20,7 +24,7 @@ import io.github.oliviercailloux.j_voting.profiles.management.StrictProfileBuild
 public class FrenchElectionTest {
 
     @Test
-    public void testGetSocietyPreference() {
+    public void testGetSocietyPreference() throws Exception {
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -35,7 +39,6 @@ public class FrenchElectionTest {
         l1.add(s1);
         l1.add(s2);
         l1.add(s3);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(l1);
         List<Alternative> list1 = new ArrayList<>();
         List<Alternative> list2 = new ArrayList<>();
         List<Alternative> list3 = new ArrayList<>();
@@ -49,22 +52,26 @@ public class FrenchElectionTest {
         list3.add(a3);
         list3.add(a2);
         list3.add(a4);
-        OldLinearPreferenceImpl p1 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list1);
-        OldLinearPreferenceImpl p2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list2);
-        OldLinearPreferenceImpl p3 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list3);
         Voter v1 = Voter.createVoter(1);
         Voter v2 = Voter.createVoter(2);
         Voter v3 = Voter.createVoter(3);
         Voter v4 = Voter.createVoter(4);
         Voter v5 = Voter.createVoter(5);
         Voter v6 = Voter.createVoter(6);
+        LinearPreferenceImpl p1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl p1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl p1V3 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl p2V4 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v4, list2);
+        LinearPreferenceImpl p2V5 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v5, list2);
+        LinearPreferenceImpl p3V6 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list3);
+        CompletePreferenceImpl pref1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1, l1);
         StrictProfileBuilder profBuild = StrictProfileBuilder.createStrictProfileBuilder();
-        profBuild.addVote(v1, p1);
-        profBuild.addVote(v2, p1);
-        profBuild.addVote(v3, p1);
-        profBuild.addVote(v4, p2);
-        profBuild.addVote(v5, p2);
-        profBuild.addVote(v6, p3);
+        profBuild.addVote(v1, p1V1);
+        profBuild.addVote(v2, p1V2);
+        profBuild.addVote(v3, p1V3);
+        profBuild.addVote(v4, p2V4);
+        profBuild.addVote(v5, p2V5);
+        profBuild.addVote(v6, p3V6);
         ImmutableStrictProfileI resultProf = (ImmutableStrictProfileI) profBuild
                         .createStrictProfileI();
         assertEquals(pref1,
