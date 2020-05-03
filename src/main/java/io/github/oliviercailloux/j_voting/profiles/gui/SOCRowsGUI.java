@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -11,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.profiles.StrictProfile;
 
@@ -47,7 +49,7 @@ public class SOCRowsGUI extends ProfileDefaultGUI {
     }
 
     @Override
-    public void populateRows() {
+    public void populateRows() throws DuplicateValueException, EmptySetException {
         LOGGER.debug("populateRows :");
         StrictProfile strictProfile = profileBuilder.createStrictProfile();
         // ROWS
@@ -58,9 +60,8 @@ public class SOCRowsGUI extends ProfileDefaultGUI {
         List<String> line = new ArrayList<>();
         for (Voter v : allVoters) {
             line.add("Voter " + v.getId());
-            OldCompletePreferenceImpl pref = strictProfile.getPreference(v);
-            Iterable<Alternative> allPref = OldCompletePreferenceImpl
-                            .toAlternativeSet(pref.getPreferencesNonStrict());
+            CompletePreferenceImpl pref = strictProfile.getPreference(v);
+            Iterable<Alternative> allPref = pref.getAlternatives();
             for (Alternative a : allPref) {
                 line.add(a.toString());
             }
@@ -74,7 +75,7 @@ public class SOCRowsGUI extends ProfileDefaultGUI {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, DuplicateValueException, EmptySetException {
         SOCRowsGUI socRows = new SOCRowsGUI();
         socRows.displayProfileWindow(args);
     }

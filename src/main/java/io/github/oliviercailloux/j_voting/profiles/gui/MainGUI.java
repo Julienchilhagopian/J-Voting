@@ -2,6 +2,8 @@ package io.github.oliviercailloux.j_voting.profiles.gui;
 
 import java.io.IOException;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -185,9 +187,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOCRowsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Rows GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Rows SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -254,9 +255,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOIRowsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Rows SOI GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Rows SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }
