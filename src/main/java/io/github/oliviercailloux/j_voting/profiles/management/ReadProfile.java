@@ -101,7 +101,7 @@ public class ReadProfile {
      * @param table not <code>null</code> a Table displayed as Voters in columns
      * @return a restricted ProfileI
      */
-    public ProfileI createProfileFromColumnsTable(Table table) {
+    public ProfileI createProfileFromColumnsTable(Table table) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("createProfileFromColumnsTable : ");
         Preconditions.checkNotNull(table);
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
@@ -119,7 +119,7 @@ public class ReadProfile {
             }
             Voter voter = Voter.createVoter(column + 1);
             LinearPreferenceImpl newPref = new ReadProfile()
-                            .createStrictPreferenceFrom(
+                            .createStrictPreferenceFrom(voter,
                                             newPrefString.toString());
             profileBuilder.addVote(voter, newPref);
         }
