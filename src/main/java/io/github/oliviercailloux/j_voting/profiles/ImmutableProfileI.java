@@ -18,6 +18,8 @@ import static com.google.common.base.Preconditions.checkNotNull;
 
 import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import io.github.oliviercailloux.j_voting.profiles.management.ProfileBuilder;
 
 /**
@@ -36,7 +38,7 @@ public class ImmutableProfileI implements ProfileI {
     }
 
     @Override
-    public CompletePreferenceImpl getPreference(Voter v) {
+    public CompletePreferenceImpl getPreference(Voter v) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("getPreference:");
         checkNotNull(v);
         LOGGER.debug("parameter voter : {}", v);

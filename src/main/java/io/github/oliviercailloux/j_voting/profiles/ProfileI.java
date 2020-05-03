@@ -7,6 +7,8 @@ import java.util.Set;
 import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 
 /**
  * A ProfileI represents an incomplete profile. The preferences can be strict or
@@ -20,7 +22,7 @@ public interface ProfileI {
      * @param v a voter not <code>null</code>
      * @return the preference of the voter v in the profile.
      */
-    public CompletePreferenceImpl getPreference(Voter v);
+    public CompletePreferenceImpl getPreference(Voter v)throws EmptySetException, DuplicateValueException;
 
     /**
      * @return the maximum size of a Preference in an incomplete Profile

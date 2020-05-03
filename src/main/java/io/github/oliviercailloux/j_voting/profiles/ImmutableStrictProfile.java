@@ -20,6 +20,8 @@ import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 //import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 
@@ -60,9 +62,11 @@ public class ImmutableStrictProfile extends ImmutableStrictProfileI
      * 
      * @param i not <code> null</code> the rank of the Alternatives to get
      * @return a List of Alternatives
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
      */
     @Override
-    public List<Alternative> getIthAlternatives(int i) {
+    public List<Alternative> getIthAlternatives(int i) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("getIthAlternatives :");
         Preconditions.checkNotNull(i);
         NavigableSet<Voter> voters = getAllVoters();

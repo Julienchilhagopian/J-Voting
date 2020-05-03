@@ -117,10 +117,12 @@ public class ImmutableStrictProfileI extends ImmutableProfileI
                             + getNbUniquePreferences() + "\n");
             for (CompletePreferenceImpl pref : this.getUniquePreferences()) {
                 soi.append(getNbVoterForPreference(pref));
+                for (Alternative a : pref.getAlternatives()) {
                     soi.append("," + a);
                 }
                 soi.append("\n");
             }
             writer.append(soi);
         }
+    }
     }

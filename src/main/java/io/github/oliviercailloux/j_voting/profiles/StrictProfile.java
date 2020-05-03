@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.List;
 
 import io.github.oliviercailloux.j_voting.Alternative;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 
 /**
  * A StrictProfile represents a complete StrictProfile. The preferences are
@@ -18,7 +20,7 @@ public interface StrictProfile extends StrictProfileI, Profile {
      *          the profile
      * @return a List of Alternatives
      */
-    public List<Alternative> getIthAlternatives(int i);
+    public List<Alternative> getIthAlternatives(int i) throws EmptySetException, DuplicateValueException;
 
     /**
      * @param i not <code>null</code> the ith alternative to get from Voters
