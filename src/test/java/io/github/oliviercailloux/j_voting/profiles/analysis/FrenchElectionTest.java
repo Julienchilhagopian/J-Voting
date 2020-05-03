@@ -13,8 +13,6 @@ import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
-import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
-import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableStrictProfileI;
