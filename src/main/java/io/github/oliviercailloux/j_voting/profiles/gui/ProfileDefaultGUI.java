@@ -127,7 +127,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOCColumnsGUI().tableDisplay();
+                    try {
+                        new SOCColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -149,7 +153,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOCWrappedColumnsGUI().tableDisplay();
+                    try {
+                        new SOCWrappedColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -159,7 +167,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOIColumnsGUI().tableDisplay();
+                    try {
+                        new SOIColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -181,7 +193,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOIWrappedColumnsGUI().tableDisplay();
+                    try {
+                        new SOIWrappedColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -323,7 +339,7 @@ public class ProfileDefaultGUI {
      * 
      * @param outputFile
      */
-    public void save(String outputFile) {
+    public void save(String outputFile) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("saveButton :");
         Preconditions.checkNotNull(outputFile);
         File file = new File(outputFile);

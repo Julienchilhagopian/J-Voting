@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -38,7 +40,7 @@ public class SOIColumnsGUI extends ColumnsDefaultGUI {
     }
 
     @Override
-    public void populateRows() {
+    public void populateRows() throws EmptySetException, DuplicateValueException {
         LOGGER.debug("populateRows");
         StrictProfileI strictProfile = profileBuilder.createStrictProfileI();
         // ROWS
@@ -53,7 +55,7 @@ public class SOIColumnsGUI extends ColumnsDefaultGUI {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         SOIColumnsGUI soiColumns = new SOIColumnsGUI();
         soiColumns.displayProfileWindow(args);
     }

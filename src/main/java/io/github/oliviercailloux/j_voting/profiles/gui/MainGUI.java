@@ -171,9 +171,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOCColumnsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Columns GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Columns GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -203,9 +202,8 @@ public class MainGUI {
                     try {
                         new SOCWrappedColumnsGUI()
                                         .displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening wrapped GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening wrapped GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -239,9 +237,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOIColumnsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Columns SOI GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("IOException when opening Columns SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -271,9 +268,8 @@ public class MainGUI {
                     try {
                         new SOIWrappedColumnsGUI()
                                         .displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Wrapped Columns SOI GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Wrapped Columns SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }

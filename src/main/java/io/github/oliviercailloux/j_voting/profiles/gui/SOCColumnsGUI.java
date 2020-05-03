@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -38,7 +40,7 @@ public class SOCColumnsGUI extends ColumnsDefaultGUI {
     private final Button addAlternativeButton = new Button(mainShell, SWT.PUSH);
 
     @Override
-    public void tableDisplay() {
+    public void tableDisplay() throws DuplicateValueException, EmptySetException{
         LOGGER.debug("tableDisplay");
         // table layout handling
         mainShell.setLayout(new GridLayout());
@@ -81,7 +83,11 @@ public class SOCColumnsGUI extends ColumnsDefaultGUI {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-                save(MainGUI.fileToRead);
+                try {
+                    save(MainGUI.fileToRead);
+                } catch (DuplicateValueException | EmptySetException ex) {
+                    throw new RuntimeException(ex.getMessage());
+                }
             }
         });
     }
@@ -137,7 +143,7 @@ public class SOCColumnsGUI extends ColumnsDefaultGUI {
     }
 
     @Override
-    public void populateRows() {
+    public void populateRows() throws DuplicateValueException, EmptySetException {
         LOGGER.debug("populateRows :");
         StrictProfile strictProfile = profileBuilder.createStrictProfile();
         // ROWS
@@ -162,7 +168,7 @@ public class SOCColumnsGUI extends ColumnsDefaultGUI {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         SOCColumnsGUI socColumns = new SOCColumnsGUI();
         socColumns.displayProfileWindow(args);
     }
