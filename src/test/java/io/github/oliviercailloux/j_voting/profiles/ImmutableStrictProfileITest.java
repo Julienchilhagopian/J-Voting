@@ -12,9 +12,11 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
-import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableStrictProfileI;
 
 public class ImmutableStrictProfileITest {
@@ -22,9 +24,11 @@ public class ImmutableStrictProfileITest {
     /**
      * 
      * @return an ImmutableStrictProfileI to test
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
      */
-    public static ImmutableStrictProfileI createISPIToTest() {
-        Map<Voter, OldLinearPreferenceImpl> profile = new HashMap<>();
+    public static ImmutableStrictProfileI createISPIToTest() throws Exception {
+        Map<Voter, LinearPreferenceImpl> profile = new HashMap<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -41,23 +45,29 @@ public class ImmutableStrictProfileITest {
         list1.add(a3);
         list2.add(a3);
         list2.add(a2);
-        OldLinearPreferenceImpl pref1 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list1);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list2);
-        profile.put(v1, pref1);
-        profile.put(v2, pref1);
-        profile.put(v3, pref1);
-        profile.put(v4, pref1);
-        profile.put(v5, pref2);
-        profile.put(v6, pref2);
+        LinearPreferenceImpl pref1V1 = LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl pref1V2 = LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl pref1V3 = LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl pref1V4 = LinearPreferenceImpl.asLinearPreference(v4, list1);
+        LinearPreferenceImpl pref2V5 = LinearPreferenceImpl.asLinearPreference(v6, list2);
+        LinearPreferenceImpl pref2V6 = LinearPreferenceImpl.asLinearPreference(v6, list2);
+        profile.put(v1, pref1V1);
+        profile.put(v2, pref1V2);
+        profile.put(v3, pref1V3);
+        profile.put(v4, pref1V4);
+        profile.put(v5, pref2V5);
+        profile.put(v6, pref2V6);
         return ImmutableStrictProfileI.createImmutableStrictProfileI(profile);
     }
 
     /**
      * 
      * @return a map of Voter and Preference to test
+     * @throws EmptySetException 
+     * @throws DuplicateValueException 
      */
-    public static Map<Voter, OldCompletePreferenceImpl> createNonStrictMap() {
-        Map<Voter, OldCompletePreferenceImpl> map = new HashMap<>();
+    public static Map<Voter, CompletePreferenceImpl> createNonStrictMap() throws Exception {
+        Map<Voter, CompletePreferenceImpl> map = new HashMap<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -78,20 +88,23 @@ public class ImmutableStrictProfileITest {
         list2.add(s3);
         list2.add(s2);
         list2.add(s1);
-        OldCompletePreferenceImpl p1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
-        OldCompletePreferenceImpl p2 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list2);
-        map.put(v1, p1);
-        map.put(v2, p1);
-        map.put(v3, p2);
+        CompletePreferenceImpl p1V1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1, list1);
+        CompletePreferenceImpl p1V2 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v2, list1);
+        CompletePreferenceImpl p2V3 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v3, list1);
+        map.put(v1, p1V1);
+        map.put(v2, p1V2);
+        map.put(v3, p2V3);
         return map;
     }
 
     /**
      * 
      * @return a map of Voter and StrictPreference to test
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
      */
-    public static Map<Voter, OldLinearPreferenceImpl> createStrictMap() {
-        Map<Voter, OldLinearPreferenceImpl> map = new HashMap<>();
+    public static Map<Voter, LinearPreferenceImpl> createStrictMap() throws Exception {
+        Map<Voter, LinearPreferenceImpl> map = new HashMap<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -106,16 +119,17 @@ public class ImmutableStrictProfileITest {
         list2.add(a3);
         list2.add(a2);
         list2.add(a1);
-        OldLinearPreferenceImpl p1 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list1);
-        OldLinearPreferenceImpl p2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list2);
-        map.put(v1, p1);
-        map.put(v2, p1);
-        map.put(v3, p2);
+        LinearPreferenceImpl p1V1 = LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl p1V2 = LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl p2V3 = LinearPreferenceImpl.asLinearPreference(v3, list1);
+        map.put(v1, p1V1);
+        map.put(v2, p1V2);
+        map.put(v3, p2V3);
         return map;
     }
 
     @Test
-    public void testGetPreferenceVoter() {
+    public void testGetPreferenceVoter() throws Exception {
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -124,7 +138,7 @@ public class ImmutableStrictProfileITest {
         list1.add(a1);
         list1.add(a2);
         list1.add(a3);
-        OldLinearPreferenceImpl pref1 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list1);
+        LinearPreferenceImpl pref1 = LinearPreferenceImpl.asLinearPreference(v1, list1);
         assertEquals(pref1, createISPIToTest().getPreference(v1));
     }
 }

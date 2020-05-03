@@ -260,7 +260,7 @@ public class ImmutableProfileITest {
     }
 
     @Test
-    public void testRestrictProfile() {
+    public void testRestrictProfile() throws Exception {
         ProfileI prof = ImmutableStrictProfileTest.createISPToTest()
                         .restrictProfile();
         assertTrue(prof instanceof ImmutableStrictProfile);

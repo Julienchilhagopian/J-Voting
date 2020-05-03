@@ -79,7 +79,7 @@ public class ImmutableStrictProfile extends ImmutableStrictProfileI
 
     /**
      * Get a List of each ith Alternative of each unique Preference in the
-     * profile
+     * profilet
      * 
      * @param i not <code> null</code> the rank of the Alternatives to get
      * @return a List of Alternatives

@@ -35,7 +35,7 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
      * @throws EmptySetException
      * @throws DuplicateValueException
      */
-    public static LinearPreference asLinearPreference(Voter voter,
+    public static LinearPreferenceImpl asLinearPreference(Voter voter,
                     List<Alternative> listAlternatives)
                     throws EmptySetException, DuplicateValueException {
         LOGGER.debug("LinearPreferenceImpl Factory with list of Alternatives");
