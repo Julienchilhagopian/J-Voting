@@ -54,17 +54,16 @@ public class ReadProfileTest {
         alternatives.add(a2);
         alternatives.add(a3);
         LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives);
-        LinearPreferenceImpl pref1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, alternatives);
         p.addVotes(pref1V1, 2);
         StrictProfileI prof = p.createStrictProfileI();
         assertTrue(prof.getProfile().containsKey(v1));
         assertTrue(prof.getProfile().containsKey(v2));
-        assertEquals(prof.getPreference(v1), pref1V1);
-        assertEquals(prof.getPreference(v2), pref1V1);
+        assertEquals(prof.getPreference(v1).asList(), pref1V1.asList());
+        assertEquals(prof.getPreference(v2).asList(), pref1V1.asList());
     }
 
     @Test
-    public void testBuildProfile() {
+    public void testBuildProfile() throws Exception{
         ReadProfile rp = new ReadProfile();
         List<String> file = new ArrayList<>();
         file.add("2,1,2,3");
@@ -79,19 +78,19 @@ public class ReadProfileTest {
         alternatives.add(a1);
         alternatives.add(a2);
         alternatives.add(a3);
-        OldLinearPreferenceImpl pref = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives);
         List<Alternative> alternatives2 = new ArrayList<>();
         alternatives2.add(a3);
         alternatives2.add(a2);
         alternatives2.add(a1);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives2);
-        ProfileI profile = rp.buildProfile(file, pref, 3);
+        LinearPreferenceImpl pref2V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives2);
+        ProfileI profile = rp.buildProfile(file, pref1V1, 3);
         assertTrue(profile.getProfile().containsKey(v1));
         assertTrue(profile.getProfile().containsKey(v2));
         assertTrue(profile.getProfile().containsKey(v3));
-        assertEquals(profile.getPreference(v1), pref);
-        assertEquals(profile.getPreference(v2), pref);
-        assertEquals(profile.getPreference(v3), pref2);
+        assertEquals(profile.getPreference(v1).getAlternatives(), pref1V1.getAlternatives());
+        assertEquals(profile.getPreference(v2).getAlternatives(), pref1V1.getAlternatives());
+        assertEquals(profile.getPreference(v3).getAlternatives(), pref2V1.getAlternatives());
     }
 
     @Test
@@ -109,18 +108,18 @@ public class ReadProfileTest {
         alternatives.add(a1);
         alternatives.add(a2);
         alternatives.add(a3);
-        OldLinearPreferenceImpl pref = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives);
         List<Alternative> alternatives2 = new ArrayList<>();
         alternatives2.add(a3);
         alternatives2.add(a2);
         alternatives2.add(a1);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives2);
+        LinearPreferenceImpl pref2V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives2);
         assertTrue(profile.getProfile().containsKey(v1));
         assertTrue(profile.getProfile().containsKey(v2));
         assertTrue(profile.getProfile().containsKey(v3));
-        assertEquals(profile.getPreference(v1), pref);
-        assertEquals(profile.getPreference(v2), pref);
-        assertEquals(profile.getPreference(v3), pref2);
+        assertEquals(profile.getPreference(v1).getAlternatives(), pref1V1.getAlternatives());
+        assertEquals(profile.getPreference(v2).getAlternatives(), pref1V1.getAlternatives());
+        assertEquals(profile.getPreference(v3).getAlternatives(), pref2V1.getAlternatives());
     }
 
     @Test
@@ -138,17 +137,17 @@ public class ReadProfileTest {
         alternatives.add(a1);
         alternatives.add(a2);
         alternatives.add(a3);
-        OldLinearPreferenceImpl pref = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives);
         List<Alternative> alternatives2 = new ArrayList<>();
         alternatives2.add(a3);
         alternatives2.add(a2);
         alternatives2.add(a1);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(alternatives2);
+        LinearPreferenceImpl pref2V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, alternatives2);
         assertTrue(profile.getProfile().containsKey(v1));
         assertTrue(profile.getProfile().containsKey(v2));
         assertTrue(profile.getProfile().containsKey(v3));
-        assertEquals(profile.getPreference(v1), pref);
-        assertEquals(profile.getPreference(v2), pref);
-        assertEquals(profile.getPreference(v3), pref2);
+        assertEquals(profile.getPreference(v1).getAlternatives(), pref1V1.getAlternatives());
+        assertEquals(profile.getPreference(v2).getAlternatives(), pref1V1.getAlternatives());
+        assertEquals(profile.getPreference(v3).getAlternatives(), pref2V1.getAlternatives());
     }
 }

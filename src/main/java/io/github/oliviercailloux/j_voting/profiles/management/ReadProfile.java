@@ -51,8 +51,8 @@ public class ReadProfile {
      *           to be extracted. InputStream is closed in this method.
      * @return sProfile a StrictProfile
      * @throws IOException
-     * @throws DuplicateValueException
-     * @throws EmptySetException
+     * @throws EmptySetException  if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      */
     public ProfileI createProfileFromStream(InputStream is) throws IOException, DuplicateValueException, EmptySetException {
         LOGGER.debug("CreateProfileFromReadFile : ");
@@ -97,7 +97,8 @@ public class ReadProfile {
     }
 
     /**
-     * 
+     * @throws EmptySetException  if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      * @param table not <code>null</code> a Table displayed as Voters in columns
      * @return a restricted ProfileI
      */
@@ -127,7 +128,8 @@ public class ReadProfile {
     }
 
     /**
-     * 
+     * @throws EmptySetException  if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      * @param table <code>null</code> a Table displayed as Voters in rows
      * @return a restricted ProfileI
      */
