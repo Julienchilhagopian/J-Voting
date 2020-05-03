@@ -3,6 +3,9 @@ package io.github.oliviercailloux.j_voting.profiles.management;
 import java.io.IOException;
 import java.util.Scanner;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,8 +40,8 @@ public class SWFCommander {
      * @return the entered StrictPreference
      * @throws IOException when the entered preference is empty.
      */
-    public static OldLinearPreferenceImpl askPreference()
-                    throws IOException {
+    public static LinearPreferenceImpl askPreference()
+                    throws IOException, DuplicateValueException, EmptySetException {
         LOGGER.debug("askPreference");
         System.out.println("Enter a StrictPreference complete");
         try (Scanner scan = new Scanner(System.in)) {
@@ -47,7 +50,8 @@ public class SWFCommander {
             if (vote.isEmpty()) {
                 throw new IOException("empty Preference entered !");
             }
-            return new ReadProfile().createStrictPreferenceFrom(vote);
+            Voter interrogedVoter = Voter.createVoter(1);
+            return new ReadProfile().createStrictPreferenceFrom(interrogedVoter, vote);
         }
     }
 
@@ -59,7 +63,7 @@ public class SWFCommander {
      * 
      * @throws IOException when the entered preference is empty.
      */
-    public void createProfileIncrementally() throws IOException {
+    public void createProfileIncrementally() throws Exception {
         LOGGER.debug("createProfileIncrementally:");
         StrictProfileBuilder prof = StrictProfileBuilder
                         .createStrictProfileBuilder();
@@ -68,9 +72,9 @@ public class SWFCommander {
         while (keepGoing) {
             LOGGER.debug("new voter id  : {}", voterId);
             Voter v = Voter.createVoter(voterId);
-            OldLinearPreferenceImpl oldLinearPreferenceImpl = askPreference();
-            LOGGER.debug("strictPreference :{}", oldLinearPreferenceImpl);
-            prof.addVote(v, oldLinearPreferenceImpl);
+            LinearPreferenceImpl linearPreferenceImpl = askPreference();
+            LOGGER.debug("strictPreference :{}", linearPreferenceImpl);
+            prof.addVote(v, linearPreferenceImpl);
             LOGGER.info("Continue ? (yes/no)");
             try (Scanner scn = new Scanner(System.in)) {
                 String answer = scn.nextLine();
