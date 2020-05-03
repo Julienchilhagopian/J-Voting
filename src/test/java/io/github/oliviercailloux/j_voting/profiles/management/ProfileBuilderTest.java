@@ -7,6 +7,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import org.junit.jupiter.api.Test;
 
 import io.github.oliviercailloux.j_voting.Alternative;
@@ -30,7 +34,7 @@ import io.github.oliviercailloux.j_voting.profiles.management.ProfileBuilder;
 public class ProfileBuilderTest {
 
     @Test
-    public void testCreateProfileI() {
+    public void testCreateProfileI() throws DuplicateValueException, EmptySetException {
         // ---beginning of creation of a ProfileI with ProfileBuilder
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
         Alternative a1 = Alternative.withId(1);
@@ -58,14 +62,18 @@ public class ProfileBuilderTest {
         list1.add(s2);
         list2.add(s3);
         list2.add(s4);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
-        OldCompletePreferenceImpl pref2 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list2);
-        profileBuilder.addVote(v1, pref1);
-        profileBuilder.addVote(v2, pref1);
-        profileBuilder.addVote(v3, pref1);
-        profileBuilder.addVote(v4, pref1);
-        profileBuilder.addVote(v5, pref2);
-        profileBuilder.addVote(v6, pref2);
+        CompletePreferenceImpl pref1V1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1, list1);
+        CompletePreferenceImpl pref1V2 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v2, list1);
+        CompletePreferenceImpl pref1V3 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v3, list1);
+        CompletePreferenceImpl pref1V4 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v4, list1);
+        CompletePreferenceImpl pref2V5 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v5, list2);
+        CompletePreferenceImpl pref2V6 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v6, list2);
+        profileBuilder.addVote(v1, pref1V1);
+        profileBuilder.addVote(v2, pref1V2);
+        profileBuilder.addVote(v3, pref1V3);
+        profileBuilder.addVote(v4, pref1V4);
+        profileBuilder.addVote(v5, pref2V5);
+        profileBuilder.addVote(v6, pref2V6);
         ProfileI immutableProfileI = profileBuilder.createProfileI();
         // ---end of creation of a ProfileI with ProfileBuilder
         ImmutableProfileI testProfileI = ImmutableProfileITest
@@ -74,7 +82,7 @@ public class ProfileBuilderTest {
     }
 
     @Test
-    public void testCreateProfile() {
+    public void testCreateProfile() throws Exception {
         // ---beginning of creation of a Profile with ProfileBuilder
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
         Alternative a1 = Alternative.withId(1);
@@ -102,14 +110,18 @@ public class ProfileBuilderTest {
         list1.add(s2);
         list2.add(s3);
         list2.add(s4);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
-        OldCompletePreferenceImpl pref2 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list2);
-        profileBuilder.addVote(v1, pref1);
-        profileBuilder.addVote(v2, pref1);
-        profileBuilder.addVote(v3, pref1);
-        profileBuilder.addVote(v4, pref1);
-        profileBuilder.addVote(v5, pref2);
-        profileBuilder.addVote(v6, pref2);
+        CompletePreferenceImpl pref1V1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1, list1);
+        CompletePreferenceImpl pref1V2 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v2, list1);
+        CompletePreferenceImpl pref1V3 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v3, list1);
+        CompletePreferenceImpl pref1V4 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v4, list1);
+        CompletePreferenceImpl pref2V5 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v5, list2);
+        CompletePreferenceImpl pref2V6 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v6, list2);
+        profileBuilder.addVote(v1, pref1V1);
+        profileBuilder.addVote(v2, pref1V2);
+        profileBuilder.addVote(v3, pref1V3);
+        profileBuilder.addVote(v4, pref1V4);
+        profileBuilder.addVote(v5, pref2V5);
+        profileBuilder.addVote(v6, pref2V6);
         Profile immutableProfile = profileBuilder.createProfile();
         // ---end of creation of a Profile with ProfileBuilder
         ImmutableProfile testProfile = ImmutableProfileTest.createIPToTest();
@@ -117,7 +129,7 @@ public class ProfileBuilderTest {
     }
 
     @Test
-    public void testCreateStrictProfileI() {
+    public void testCreateStrictProfileI() throws Exception {
         // ---beginning of creation of a StrictProfileI with ProfileBuilder
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
         Alternative a1 = Alternative.withId(1);
@@ -136,14 +148,18 @@ public class ProfileBuilderTest {
         list1.add(a3);
         list2.add(a3);
         list2.add(a2);
-        OldLinearPreferenceImpl pref1 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list1);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list2);
-        profileBuilder.addVote(v1, pref1);
-        profileBuilder.addVote(v2, pref1);
-        profileBuilder.addVote(v3, pref1);
-        profileBuilder.addVote(v4, pref1);
-        profileBuilder.addVote(v5, pref2);
-        profileBuilder.addVote(v6, pref2);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl pref1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl pref1V3 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl pref1V4 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v4, list1);
+        LinearPreferenceImpl pref2V5 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v5, list2);
+        LinearPreferenceImpl pref2V6 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
+        profileBuilder.addVote(v1, pref1V1);
+        profileBuilder.addVote(v2, pref1V2);
+        profileBuilder.addVote(v3, pref1V3);
+        profileBuilder.addVote(v4, pref1V4);
+        profileBuilder.addVote(v5, pref2V5);
+        profileBuilder.addVote(v6, pref2V6);
         StrictProfileI immutableStrictProfileI = profileBuilder
                         .createStrictProfileI();
         // ---end of creation of a StrictProfileI with ProfileBuilder
@@ -153,7 +169,7 @@ public class ProfileBuilderTest {
     }
 
     @Test
-    public void testCreateStrictProfile() {
+    public void testCreateStrictProfile() throws Exception {
         // ---beginning of creation of a StrictProfile with ProfileBuilder
         ProfileBuilder profileBuilder = ProfileBuilder.createProfileBuilder();
         Alternative a1 = Alternative.withId(1);
@@ -173,14 +189,18 @@ public class ProfileBuilderTest {
         list2.add(a3);
         list2.add(a2);
         list2.add(a1);
-        OldLinearPreferenceImpl pref1 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list1);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list2);
-        profileBuilder.addVote(v1, pref1);
-        profileBuilder.addVote(v2, pref1);
-        profileBuilder.addVote(v3, pref1);
-        profileBuilder.addVote(v4, pref1);
-        profileBuilder.addVote(v5, pref2);
-        profileBuilder.addVote(v6, pref2);
+        LinearPreferenceImpl pref1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl pref1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl pref1V3 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl pref1V4 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v4, list1);
+        LinearPreferenceImpl pref2V5 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v5, list2);
+        LinearPreferenceImpl pref2V6 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
+        profileBuilder.addVote(v1, pref1V1);
+        profileBuilder.addVote(v2, pref1V2);
+        profileBuilder.addVote(v3, pref1V3);
+        profileBuilder.addVote(v4, pref1V4);
+        profileBuilder.addVote(v5, pref2V5);
+        profileBuilder.addVote(v6, pref2V6);
         StrictProfile immutableStrictProfile = profileBuilder
                         .createStrictProfile();
         // ---end of creation of a StrictProfile with ProfileBuilder
