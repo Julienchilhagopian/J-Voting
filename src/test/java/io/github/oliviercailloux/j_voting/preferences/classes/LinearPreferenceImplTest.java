@@ -52,7 +52,5 @@ class LinearPreferenceImplTest {
                                         ImmutableList.of(null)));
         assertThrows(Exception.class, () -> LinearPreferenceImpl
                         .asLinearPreference(v1, null));
-        assertThrows(Exception.class, () -> LinearPreferenceImpl
-                        .asLinearPreference(null, ImmutableList.of(null)));
     }
 }
