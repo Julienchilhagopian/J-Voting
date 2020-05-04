@@ -23,7 +23,6 @@ import io.github.oliviercailloux.j_voting.preferences.interfaces.Preference;
 public class LinearPreferenceImpl extends CompletePreferenceImpl
                 implements LinearPreference {
 
-    ImmutableList<Alternative> list;
     private static final Logger LOGGER = LoggerFactory
                     .getLogger(LinearPreferenceImpl.class.getName());
 
@@ -59,18 +58,11 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
                     List<Set<Alternative>> equivalenceClasses)
                     throws EmptySetException, DuplicateValueException {
         super(voter, equivalenceClasses);
-        List<Alternative> tmpList = Lists.newArrayList();
-        for (Set<Alternative> equivalenceClass : equivalenceClasses) {
-            Alternative alternative = Iterables
-                            .getOnlyElement(equivalenceClass);
-            tmpList.add(alternative);
-        }
-        this.list = ImmutableList.copyOf(tmpList);
     }
 
     @Override
     public ImmutableList<Alternative> asList() {
-        return this.list;
+        return this.getAlternatives().asList();
     }
 
     @Override
