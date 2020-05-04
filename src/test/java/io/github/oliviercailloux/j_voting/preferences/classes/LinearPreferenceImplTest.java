@@ -47,7 +47,6 @@ class LinearPreferenceImplTest {
         assertNotEquals(toTest, toTest3);
         assertEquals(toTest, toTest4);
     }
-    
 
     @Test
     void throwsTest() {
