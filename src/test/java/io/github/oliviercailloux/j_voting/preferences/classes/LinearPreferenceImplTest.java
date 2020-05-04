@@ -3,10 +3,7 @@ package io.github.oliviercailloux.j_voting.preferences.classes;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a1;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a2;
 import static io.github.oliviercailloux.j_voting.AlternativeHelper.a3;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
@@ -46,9 +43,9 @@ class LinearPreferenceImplTest {
     	LinearPreference toTest2 = LinearPreferenceImpl.asLinearPreference(Voter.createVoter(3), ImmutableList.of(a1, a2, a3));
     	LinearPreference toTest3 = LinearPreferenceImpl.asLinearPreference(Voter.createVoter(1), ImmutableList.of(a1, a3, a2));
     	LinearPreference toTest4 = LinearPreferenceImpl.asLinearPreference(Voter.createVoter(3), ImmutableList.of(a1, a3, a2));
-        assertFalse(toTest.equals(toTest2));
-        assertFalse(toTest.equals(toTest3));
-        assertTrue(toTest.equals(toTest4));
+        assertNotEquals(toTest, toTest2);
+        assertNotEquals(toTest, toTest3);
+        assertEquals(toTest, toTest4);
     }
     
 
