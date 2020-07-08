@@ -78,6 +78,8 @@ public class CompletePreferenceImpl implements CompletePreference {
 
     /**
      * Return the graph associated to the preference.
+     * The nodes constructed by the graph are following the exact same order
+     * provided in the equivalenceClasses parameter.
      *
      * @param  equivalenceClasses a list of set of alternative
      * @throws EmptySetException if a Set is empty
