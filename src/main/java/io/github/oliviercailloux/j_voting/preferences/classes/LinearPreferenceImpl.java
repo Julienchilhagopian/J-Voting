@@ -10,7 +10,6 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 import io.github.oliviercailloux.j_voting.Alternative;
@@ -23,7 +22,6 @@ import io.github.oliviercailloux.j_voting.preferences.interfaces.Preference;
 public class LinearPreferenceImpl extends CompletePreferenceImpl
                 implements LinearPreference {
 
-    ImmutableList<Alternative> list;
     private static final Logger LOGGER = LoggerFactory
                     .getLogger(LinearPreferenceImpl.class.getName());
 
@@ -32,8 +30,8 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
      * @param voter            <code> not null </code>
      * @param listAlternatives <code> not null </code>
      * @return new LinearPreference
-     * @throws EmptySetException
-     * @throws DuplicateValueException
+     * @throws EmptySetException if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      */
     public static LinearPreference asLinearPreference(Voter voter,
                     List<Alternative> listAlternatives)
@@ -52,25 +50,18 @@ public class LinearPreferenceImpl extends CompletePreferenceImpl
      * 
      * @param voter              <code> not null </code>
      * @param equivalenceClasses <code> not null </code>
-     * @throws EmptySetException
-     * @throws DuplicateValueException
+     * @throws EmptySetException if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      */
     private LinearPreferenceImpl(Voter voter,
                     List<Set<Alternative>> equivalenceClasses)
                     throws EmptySetException, DuplicateValueException {
         super(voter, equivalenceClasses);
-        List<Alternative> tmpList = Lists.newArrayList();
-        for (Set<Alternative> equivalenceClass : equivalenceClasses) {
-            Alternative alternative = Iterables
-                            .getOnlyElement(equivalenceClass);
-            tmpList.add(alternative);
-        }
-        this.list = ImmutableList.copyOf(tmpList);
     }
 
     @Override
     public ImmutableList<Alternative> asList() {
-        return this.list;
+        return this.getAlternatives().asList();
     }
 
     @Override
