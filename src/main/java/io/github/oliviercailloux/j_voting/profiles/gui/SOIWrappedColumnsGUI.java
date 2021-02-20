@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -25,11 +26,11 @@ public class SOIWrappedColumnsGUI extends ColumnsDefaultGUI {
         LOGGER.debug("createColumns :");
         StrictProfileI strictProfile = profileBuilder.createStrictProfileI();
         // if profile get from file is SOC, create a StrictProfile from it
-        Set<OldCompletePreferenceImpl> uniquePreferences = strictProfile
+        Set<CompletePreferenceImpl> uniquePreferences = strictProfile
                         .getUniquePreferences();
         // COLUMNS
         List<String> titles = new ArrayList<>();
-        for (OldCompletePreferenceImpl p : uniquePreferences) {
+        for (CompletePreferenceImpl p : uniquePreferences) {
             int nbVoters = strictProfile.getNbVoterForPreference(p);
             String voterOrVoters = (nbVoters > 1) ? " voters" : " voter";
             titles.add(nbVoters + voterOrVoters);
@@ -64,7 +65,7 @@ public class SOIWrappedColumnsGUI extends ColumnsDefaultGUI {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         SOIWrappedColumnsGUI soiWrapped = new SOIWrappedColumnsGUI();
         soiWrapped.displayProfileWindow(args);
     }

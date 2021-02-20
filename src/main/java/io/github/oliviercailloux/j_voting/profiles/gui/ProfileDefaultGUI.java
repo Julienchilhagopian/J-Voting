@@ -8,6 +8,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -30,7 +33,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Preconditions;
 
-import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
 import io.github.oliviercailloux.j_voting.profiles.ProfileI;
 import io.github.oliviercailloux.j_voting.profiles.StrictProfile;
@@ -55,7 +57,7 @@ public class ProfileDefaultGUI {
                     SWT.MULTI | SWT.BORDER);
     protected static Table table = tableViewer.getTable();
     protected static Integer voterToModify = null;
-    protected static OldLinearPreferenceImpl newpref;
+    protected static LinearPreferenceImpl newpref;
     protected static ProfileBuilder profileBuilder;
 
     /**
@@ -64,8 +66,10 @@ public class ProfileDefaultGUI {
      * 
      * @param args
      * @throws IOException
+     * @throws EmptySetException  if a Set is empty
+     * @throws DuplicateValueException if an Alternative is duplicate
      */
-    public void displayProfileWindow(String[] args) throws IOException {
+    public void displayProfileWindow(String[] args) throws IOException, DuplicateValueException, EmptySetException {
         LOGGER.debug("displayProfileWindow");
         Preconditions.checkNotNull(args[0]);
         String arg = args[0];// arg is the file path
@@ -88,7 +92,7 @@ public class ProfileDefaultGUI {
     /**
      * Displays the table containing the profile
      */
-    public void tableDisplay() {
+    public void tableDisplay() throws DuplicateValueException, EmptySetException{
         LOGGER.debug("tableDisplay");
         // table layout handling
         mainShell.setLayout(new GridLayout());
@@ -111,7 +115,7 @@ public class ProfileDefaultGUI {
      * 
      * @param args contains the name of the file with the profile
      */
-    public void displayRadioButtons(String[] args) {
+    public void displayRadioButtons(String[] args) throws DuplicateValueException, EmptySetException {
         LOGGER.debug("displayRadioButtons :");
         columnsButton.setText("Columns");
         rowsButton.setText("Rows");
@@ -123,7 +127,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOCColumnsGUI().tableDisplay();
+                    try {
+                        new SOCColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -132,7 +140,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOCRowsGUI().tableDisplay();
+                    try {
+                        new SOCRowsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -141,7 +153,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOCWrappedColumnsGUI().tableDisplay();
+                    try {
+                        new SOCWrappedColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -151,7 +167,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOIColumnsGUI().tableDisplay();
+                    try {
+                        new SOIColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -160,7 +180,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOIRowsGUI().tableDisplay();
+                    try {
+                        new SOIRowsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                       throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -169,7 +193,11 @@ public class ProfileDefaultGUI {
                 @Override
                 public void widgetSelected(SelectionEvent e) {
                     emptyTable();
-                    new SOIWrappedColumnsGUI().tableDisplay();
+                    try {
+                        new SOIWrappedColumnsGUI().tableDisplay();
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                     table.setRedraw(true);
                 }
             });
@@ -212,8 +240,10 @@ public class ProfileDefaultGUI {
     /**
      * Fills the table of the profile with the alternatives : by default, each
      * column contains the preference of a voter
+     * @throws EmptySetException  if a Set is empty
+      *@throws DuplicateValueException if an Alternative is duplicate
      */
-    public void populateRows() {
+    public void populateRows() throws DuplicateValueException, EmptySetException {
         LOGGER.debug("populateRowsSOI :");
         // ROWS
         StrictProfileI strictProfile = profileBuilder.createStrictProfileI();
@@ -267,10 +297,11 @@ public class ProfileDefaultGUI {
             @Override
             public void handleEvent(Event event) {
                 try {
-                    newpref = new ReadProfile().createStrictPreferenceFrom(
+                    Voter vToManipulatePref = Voter.createVoter(1);
+                    newpref = new ReadProfile().createStrictPreferenceFrom(vToManipulatePref,
                                     textPref.getText());
-                } catch (IllegalArgumentException iae) {
-                    LOGGER.debug("Illegal Argument Exception : {} ", iae);
+                } catch (IllegalArgumentException | DuplicateValueException | EmptySetException ex) {
+                    throw new RuntimeException(ex.getMessage());
                 }
             }
         });
@@ -308,7 +339,7 @@ public class ProfileDefaultGUI {
      * 
      * @param outputFile
      */
-    public void save(String outputFile) {
+    public void save(String outputFile) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("saveButton :");
         Preconditions.checkNotNull(outputFile);
         File file = new File(outputFile);

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import io.github.oliviercailloux.j_voting.Alternative;
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableStrictProfile;
 
 public class ImmutableStrictProfileTest {
@@ -20,9 +21,11 @@ public class ImmutableStrictProfileTest {
     /**
      * 
      * @return an ImmutableStrictProfileI to test
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
      */
-    public static ImmutableStrictProfile createISPToTest() {
-        Map<Voter, OldLinearPreferenceImpl> profile = new HashMap<>();
+    public static ImmutableStrictProfile createISPToTest() throws Exception {
+        Map<Voter, LinearPreferenceImpl> profile = new HashMap<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -40,24 +43,29 @@ public class ImmutableStrictProfileTest {
         list2.add(a3);
         list2.add(a2);
         list2.add(a1);
-        OldLinearPreferenceImpl pref1 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list1);
-        OldLinearPreferenceImpl pref2 = OldLinearPreferenceImpl.createStrictCompletePreferenceImpl(list2);
-        profile.put(v1, pref1);
-        profile.put(v2, pref1);
-        profile.put(v3, pref1);
-        profile.put(v4, pref1);
-        profile.put(v5, pref2);
-        profile.put(v6, pref2);
+        LinearPreferenceImpl p1V1 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v1, list1);
+        LinearPreferenceImpl p1V2 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v2, list1);
+        LinearPreferenceImpl p1V3 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v3, list1);
+        LinearPreferenceImpl p1V4 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v4, list1);
+        LinearPreferenceImpl p2V5 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
+        LinearPreferenceImpl p2V6 = (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v6, list2);
+
+        profile.put(v1, p1V1);
+        profile.put(v2, p1V2);
+        profile.put(v3, p1V3);
+        profile.put(v4, p1V4);
+        profile.put(v5, p2V5);
+        profile.put(v6, p2V6);
         return ImmutableStrictProfile.createImmutableStrictProfile(profile);
     }
 
     @Test
-    public void testGetNbAlternatives() {
+    public void testGetNbAlternatives() throws Exception {
         assertEquals(createISPToTest().getNbAlternatives(), 3);
     }
 
     @Test
-    public void testGetAlternatives() {
+    public void testGetAlternatives() throws Exception {
         Set<Alternative> alters = new HashSet<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);

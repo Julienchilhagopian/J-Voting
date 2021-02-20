@@ -17,8 +17,13 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
+
 
 /**
  * This class is immutable. Represents a Strict Complete Profile.
@@ -30,11 +35,11 @@ public class ImmutableStrictProfile extends ImmutableStrictProfileI
                     .getLogger(ImmutableStrictProfile.class.getName());
 
     public static ImmutableStrictProfile createImmutableStrictProfile(
-                    Map<Voter, ? extends OldCompletePreferenceImpl> map) {
+                    Map<Voter, ? extends CompletePreferenceImpl> map) {
         return new ImmutableStrictProfile(map);
     }
 
-    private ImmutableStrictProfile(Map<Voter, ? extends OldCompletePreferenceImpl> map) {
+    private ImmutableStrictProfile(Map<Voter, ? extends CompletePreferenceImpl> map) {
         super(checkCompleteMap(map));
     }
 
@@ -47,8 +52,8 @@ public class ImmutableStrictProfile extends ImmutableStrictProfileI
     @Override
     public Set<Alternative> getAlternatives() {
         LOGGER.debug("getAlternatives :");
-        OldCompletePreferenceImpl p = votes.values().iterator().next();
-        return OldCompletePreferenceImpl.toAlternativeSet(p.getPreferencesNonStrict());
+        CompletePreferenceImpl p = votes.values().iterator().next();
+        return p.getAlternatives();
     }
 
     /**
@@ -56,22 +61,24 @@ public class ImmutableStrictProfile extends ImmutableStrictProfileI
      * 
      * @param i not <code> null</code> the rank of the Alternatives to get
      * @return a List of Alternatives
+     * @throws DuplicateValueException 
+     * @throws EmptySetException 
      */
     @Override
-    public List<Alternative> getIthAlternatives(int i) {
+    public List<Alternative> getIthAlternatives(int i) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("getIthAlternatives :");
         Preconditions.checkNotNull(i);
         NavigableSet<Voter> voters = getAllVoters();
         List<Alternative> listIthAlternatives = new ArrayList<>();
         for (Voter v : voters) {
-            listIthAlternatives.add(getPreference(v).getAlternative(i));
+            listIthAlternatives.add(getPreference(v).asList().get(i));
         }
         return listIthAlternatives;
     }
 
     /**
      * Get a List of each ith Alternative of each unique Preference in the
-     * profile
+     * profilet
      * 
      * @param i not <code> null</code> the rank of the Alternatives to get
      * @return a List of Alternatives
@@ -81,8 +88,9 @@ public class ImmutableStrictProfile extends ImmutableStrictProfileI
         LOGGER.debug("getIthAlternativesOfUniquePreferences :");
         Preconditions.checkNotNull(i);
         List<Alternative> listIthAlternatives = new ArrayList<>();
-        for (OldCompletePreferenceImpl p : getUniquePreferences()) {
-            listIthAlternatives.add(p.getAlternative(i));
+        for (CompletePreferenceImpl p : getUniquePreferences()) {
+        	OldLinearPreferenceImpl l = p.toStrictPreference();
+            listIthAlternatives.add(l.getAlternative(i));
         }
         return listIthAlternatives;
     }
@@ -100,10 +108,9 @@ public class ImmutableStrictProfile extends ImmutableStrictProfileI
             }
             soc.append(getNbVoters() + "," + getSumVoteCount() + ","
                             + getNbUniquePreferences() + "\n");
-            for (OldCompletePreferenceImpl pref : this.getUniquePreferences()) {
+            for (CompletePreferenceImpl pref : this.getUniquePreferences()) {
                 soc.append(getNbVoterForPreference(pref));
-                for (Alternative a : OldCompletePreferenceImpl.toAlternativeSet(
-                                pref.getPreferencesNonStrict())) {
+                for (Alternative a : pref.getAlternatives()) {
                     soc.append("," + a);
                 }
                 soc.append("\n");

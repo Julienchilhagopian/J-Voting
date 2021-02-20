@@ -10,14 +10,18 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
 
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.base.Preconditions;
+import static com.google.common.base.Preconditions.checkNotNull;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import io.github.oliviercailloux.j_voting.profiles.management.ProfileBuilder;
 
 /**
@@ -27,18 +31,18 @@ public class ImmutableProfileI implements ProfileI {
 
     private static final Logger LOGGER = LoggerFactory
                     .getLogger(ImmutableProfileI.class.getName());
-    protected Map<Voter, ? extends OldCompletePreferenceImpl> votes;
+    protected Map<Voter, ? extends CompletePreferenceImpl> votes;
 
     protected ImmutableProfileI(
-                    Map<Voter, ? extends OldCompletePreferenceImpl> votes) {
+                    Map<Voter, ? extends CompletePreferenceImpl> votes) {
         LOGGER.debug("ImmutableProfileI constructor");
         this.votes = votes;
     }
 
     @Override
-    public OldCompletePreferenceImpl getPreference(Voter v) {
+    public CompletePreferenceImpl getPreference(Voter v) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("getPreference:");
-        Preconditions.checkNotNull(v);
+        checkNotNull(v);
         LOGGER.debug("parameter voter : {}", v);
         if (votes.containsKey(v)) {
             return votes.get(v);
@@ -50,10 +54,11 @@ public class ImmutableProfileI implements ProfileI {
     public int getMaxSizeOfPreference() {
         LOGGER.debug("getMaxSizeOfPreference");
         int maxSize = 0;
-        Collection<? extends OldCompletePreferenceImpl> pref = votes.values();
-        for (OldCompletePreferenceImpl p : pref) {
-            if (maxSize < p.size()) {
-                maxSize = p.size();
+        Collection<? extends CompletePreferenceImpl> pref = votes.values();
+        System.out.println(votes.values());
+        for (CompletePreferenceImpl p : pref) {
+            if (maxSize < p.getAlternatives().size()) {
+                maxSize = p.getAlternatives().size();
             }
         }
         LOGGER.debug("biggest Preference has size : {}", maxSize);
@@ -61,7 +66,7 @@ public class ImmutableProfileI implements ProfileI {
     }
 
     @Override
-    public Map<Voter, ? extends OldCompletePreferenceImpl> getProfile() {
+    public Map<Voter, ? extends CompletePreferenceImpl> getProfile() {
         LOGGER.debug("getProfile:");
         return votes;
     }
@@ -90,12 +95,14 @@ public class ImmutableProfileI implements ProfileI {
     }
 
     @Override
-    public Set<OldCompletePreferenceImpl> getUniquePreferences() {
+    public Set<CompletePreferenceImpl> getUniquePreferences() {
         LOGGER.debug("getUniquePreferences");
-        Set<OldCompletePreferenceImpl> unique = new LinkedHashSet<>();
-        for (OldCompletePreferenceImpl pref : votes.values()) {
-            LOGGER.debug("next preference : {}", pref);
-            unique.add(pref);
+        Set<ImmutableList<ImmutableSet<Alternative>>> eqClassesSet = new LinkedHashSet<>();
+        Set<CompletePreferenceImpl> unique = new LinkedHashSet<>();
+        for (CompletePreferenceImpl pref : votes.values()) {
+            if(eqClassesSet.add(pref.asEquivalenceClasses())) {
+                unique.add(pref);
+            }
         }
         return unique;
     }
@@ -109,10 +116,10 @@ public class ImmutableProfileI implements ProfileI {
     @Override
     public boolean isComplete() {
         LOGGER.debug("isComplete");
-        OldCompletePreferenceImpl pref = votes.values().iterator().next();
+        CompletePreferenceImpl pref = votes.values().iterator().next();
         LOGGER.debug("first preferences :{}", pref);
-        for (OldCompletePreferenceImpl p : votes.values()) {
-            if (!p.hasSameAlternatives(pref)) {
+        for (CompletePreferenceImpl p : votes.values()) {
+            if (!p.getAlternatives().equals(pref.getAlternatives())) {
                 LOGGER.debug("Profile incomplete.");
                 return false;
             }
@@ -124,7 +131,7 @@ public class ImmutableProfileI implements ProfileI {
     @Override
     public boolean isStrict() {
         LOGGER.debug("isStrict:");
-        for (OldCompletePreferenceImpl p : votes.values()) {
+        for (CompletePreferenceImpl p : votes.values()) {
             if (!p.isStrict()) {
                 LOGGER.debug("non strict");
                 return false;
@@ -135,13 +142,13 @@ public class ImmutableProfileI implements ProfileI {
     }
 
     @Override
-    public int getNbVoterForPreference(OldCompletePreferenceImpl p) {
+    public int getNbVoterForPreference(CompletePreferenceImpl p) {
         LOGGER.debug("getnbVoterByPreference:");
-        Preconditions.checkNotNull(p);
+        checkNotNull(p);
         LOGGER.debug("parameter preference: {}", p);
         int nb = 0;
-        for (OldCompletePreferenceImpl p1 : votes.values()) {
-            if (p.equals(p1)) {
+        for (CompletePreferenceImpl p1 : votes.values()) {
+            if (p.asEquivalenceClasses().equals(p1.asEquivalenceClasses())) {
                 nb++;
             }
         }
@@ -192,10 +199,10 @@ public class ImmutableProfileI implements ProfileI {
      * @return the map if and only if it represents a complete profile. If it is
      *         incomplete, it throws an IllegalArgumentException.
      */
-    public static Map<Voter, ? extends OldCompletePreferenceImpl> checkCompleteMap(
-                    Map<Voter, ? extends OldCompletePreferenceImpl> map) {
+    public static Map<Voter, ? extends CompletePreferenceImpl> checkCompleteMap(
+                    Map<Voter, ? extends CompletePreferenceImpl> map) {
         LOGGER.debug("checkCompleteMap:");
-        Preconditions.checkNotNull(map);
+        checkNotNull(map);
         if (!createImmutableProfileI(map).isComplete()) {
             throw new IllegalArgumentException("map is incomplete");
         }
@@ -208,10 +215,10 @@ public class ImmutableProfileI implements ProfileI {
      * @return the map if and only if it represents a strict profile. If it is
      *         not strict, it throws an IllegalArgumentException.
      */
-    public static Map<Voter, ? extends OldCompletePreferenceImpl> checkStrictMap(
-                    Map<Voter, ? extends OldCompletePreferenceImpl> map) {
+    public static Map<Voter, ? extends CompletePreferenceImpl> checkStrictMap(
+                    Map<Voter, ? extends CompletePreferenceImpl> map) {
         LOGGER.debug("checkstrictMap:");
-        Preconditions.checkNotNull(map);
+        checkNotNull(map);
         if (!createImmutableProfileI(map).isStrict()) {
             throw new IllegalArgumentException("map is not strict");
         }
@@ -225,9 +232,9 @@ public class ImmutableProfileI implements ProfileI {
      * @return new ImmutableProfileI
      */
     public static ImmutableProfileI createImmutableProfileI(
-                    Map<Voter, ? extends OldCompletePreferenceImpl> votes) {
+                    Map<Voter, ? extends CompletePreferenceImpl> votes) {
         LOGGER.debug("Factory ImmutableProfileI");
-        Preconditions.checkNotNull(votes);
+        checkNotNull(votes);
         return new ImmutableProfileI(votes);
     }
 
@@ -241,9 +248,8 @@ public class ImmutableProfileI implements ProfileI {
     public Set<Alternative> getAlternatives() {
         LOGGER.debug("getAlternatives");
         Set<Alternative> set = new HashSet<>();
-        for (OldCompletePreferenceImpl pref : getUniquePreferences()) {
-            for (Alternative a : OldCompletePreferenceImpl
-                            .toAlternativeSet(pref.getPreferencesNonStrict())) {
+        for (CompletePreferenceImpl pref : getUniquePreferences()) {
+            for (Alternative a : pref.getAlternatives()) {
                 set.add(a);
             }
         }

@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import org.junit.jupiter.api.Test;
 
 import com.google.common.collect.HashMultiset;
@@ -24,8 +27,8 @@ import io.github.oliviercailloux.j_voting.profiles.analysis.Borda;
 
 public class BordaTest {
 
-    public static ImmutableProfileI createIPIToTest() {
-        Map<Voter, OldCompletePreferenceImpl> profile = new HashMap<>();
+    public static ImmutableProfileI createIPIToTest() throws DuplicateValueException, EmptySetException {
+        Map<Voter, CompletePreferenceImpl> profile = new HashMap<>();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
         Alternative a3 = Alternative.withId(3);
@@ -51,19 +54,23 @@ public class BordaTest {
         list1.add(s2);
         list2.add(s3);
         list2.add(s4);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
-        OldCompletePreferenceImpl pref2 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list2);
-        profile.put(v1, pref1);
-        profile.put(v2, pref1);
-        profile.put(v3, pref1);
-        profile.put(v4, pref1);
-        profile.put(v5, pref2);
-        profile.put(v6, pref2);
+        CompletePreferenceImpl pref1V1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1, list1);
+        CompletePreferenceImpl pref1V2 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v2, list1);
+        CompletePreferenceImpl pref1V3 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v3, list1);
+        CompletePreferenceImpl pref1V4 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v4, list1);
+        CompletePreferenceImpl pref2V5 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v5, list2);
+        CompletePreferenceImpl pref2V6 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v6, list2);
+        profile.put(v1, pref1V1);
+        profile.put(v2, pref1V2);
+        profile.put(v3, pref1V3);
+        profile.put(v4, pref1V4);
+        profile.put(v5, pref2V5);
+        profile.put(v6, pref2V6);
         return ImmutableProfileI.createImmutableProfileI(profile);
     }
 
     @Test
-    public void testgetSocietyPreference() {
+    public void testgetSocietyPreference() throws Exception {
         ImmutableProfileI prof = createIPIToTest();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
@@ -78,12 +85,13 @@ public class BordaTest {
         list1.add(s2);
         list1.add(s1);
         list1.add(s3);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
+        Voter society = Voter.createVoter(1);
+        CompletePreferenceImpl pref1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(society, list1);
         assertEquals(Borda.withScores().getSocietyPreference(prof), pref1);
     }
 
     @Test
-    public void testSetScoresPref() {
+    public void testSetScoresPref() throws Exception {
         Borda b = Borda.withScores();
         Alternative a1 = Alternative.withId(1);
         Alternative a2 = Alternative.withId(2);
@@ -96,7 +104,8 @@ public class BordaTest {
         s2.add(a3);
         list1.add(s1);
         list1.add(s2);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
+        Voter voterTest = Voter.createVoter(2);
+        CompletePreferenceImpl pref1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(voterTest, list1);
         b.setScores(pref1);
         Multiset<Alternative> m = b.getMultiSet();
         assertEquals(m.count(a1), 2);
@@ -105,7 +114,7 @@ public class BordaTest {
     }
 
     @Test
-    public void testSetScoresProfile() {
+    public void testSetScoresProfile() throws Exception {
         Borda b = Borda.withScores();
         ProfileI p = createIPIToTest();
         Alternative a1 = Alternative.withId(1);

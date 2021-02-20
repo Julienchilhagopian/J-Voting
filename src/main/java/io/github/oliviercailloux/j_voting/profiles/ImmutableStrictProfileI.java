@@ -16,9 +16,13 @@ import org.slf4j.LoggerFactory;
 import com.google.common.base.Preconditions;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
+//import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 
 /**
  * This class is immutable. Represents a Strict Incomplete Profile.
@@ -36,46 +40,47 @@ public class ImmutableStrictProfileI extends ImmutableProfileI
      * @return new ImmutableStrictProfileI
      */
     public static ImmutableStrictProfileI createImmutableStrictProfileI(
-                    Map<Voter, ? extends OldCompletePreferenceImpl> map) {
+                    Map<Voter, ? extends CompletePreferenceImpl> map) {
         LOGGER.debug("Factory ImmutableStrictProfileI");
         checkStrictMap(map);
         return new ImmutableStrictProfileI(map);
     }
 
     protected ImmutableStrictProfileI(
-                    Map<Voter, ? extends OldCompletePreferenceImpl> map) {
+                    Map<Voter, ? extends CompletePreferenceImpl> map) {
         super(map);
         LOGGER.debug("ImmutableStrictProfileI  constructor");
     }
 
     @Override
-    public OldLinearPreferenceImpl getPreference(Voter v) {
+    public LinearPreferenceImpl getPreference(Voter v) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("getPreference:");
         Preconditions.checkNotNull(v);
         if (!votes.containsKey(v)) {
             throw new NoSuchElementException(
                             "Voter " + v + "is not in the map !");
         }
-        return votes.get(v).toStrictPreference();
+        return (LinearPreferenceImpl) LinearPreferenceImpl.asLinearPreference(v, votes.get(v).getAlternatives().asList());
     }
 
     @Override
-    public List<String> getIthAlternativesAsStrings(int i) {
+    public List<String> getIthAlternativesAsStrings(int i) throws EmptySetException, DuplicateValueException {
         LOGGER.debug("getIthAlternativesStrings");
         if (i > getMaxSizeOfPreference()) {
             throw new IndexOutOfBoundsException(
                             "The given index is out of bound.");
         }
+        
         List<String> list = new ArrayList<>();
         for (Voter v : getAllVoters()) {
-            OldLinearPreferenceImpl p = getPreference(v);
+            LinearPreferenceImpl p = getPreference(v);
             LOGGER.debug("the voter {} votes for the preference {}", v, p);
-            if (i >= p.size()) {
+            if (i >= p.asList().size()) {
                 list.add("");
                 LOGGER.debug("the preference is smaller than the given index");
             } else {
-                list.add(p.getAlternative(i).toString());
-                LOGGER.debug("the ith alternative is {}", p.getAlternative(i));
+                list.add(p.asList().get(i).toString());
+                LOGGER.debug("the ith alternative is {}", p.asList().get(i));
             }
         }
         return list;
@@ -86,11 +91,11 @@ public class ImmutableStrictProfileI extends ImmutableProfileI
         LOGGER.debug("getIthAlternativesOfUniquePrefAsString");
         Preconditions.checkNotNull(i);
         List<String> list = new ArrayList<>();
-        for (OldCompletePreferenceImpl p : getUniquePreferences()) {
+        for (CompletePreferenceImpl p : getUniquePreferences()) {
             String alter = "";
-            if (i < p.size()) {
-                alter = p.getAlternative(i).toString();
-                LOGGER.debug("the ith alternative is {}", p.getAlternative(i));
+            if (i < p.asEquivalenceClasses().size()) {
+                alter = p.getAlternatives(i).toString();
+                LOGGER.debug("the ith alternative is {}", p.getAlternatives(i));
             }
             list.add(alter);
         }
@@ -110,10 +115,9 @@ public class ImmutableStrictProfileI extends ImmutableProfileI
             }
             soi.append(getNbVoters() + "," + getSumVoteCount() + ","
                             + getNbUniquePreferences() + "\n");
-            for (OldCompletePreferenceImpl pref : this.getUniquePreferences()) {
+            for (CompletePreferenceImpl pref : this.getUniquePreferences()) {
                 soi.append(getNbVoterForPreference(pref));
-                for (Alternative a : OldCompletePreferenceImpl.toAlternativeSet(
-                                pref.getPreferencesNonStrict())) {
+                for (Alternative a : pref.getAlternatives()) {
                     soi.append("," + a);
                 }
                 soi.append("\n");
@@ -121,4 +125,4 @@ public class ImmutableStrictProfileI extends ImmutableProfileI
             writer.append(soi);
         }
     }
-}
+    }

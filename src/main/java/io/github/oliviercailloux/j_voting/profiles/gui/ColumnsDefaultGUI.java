@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import org.eclipse.jface.viewers.ViewerCell;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -52,7 +54,7 @@ public class ColumnsDefaultGUI extends ProfileDefaultGUI {
      * @throws IOException
      */
     @Override
-    public void displayProfileWindow(String[] args) throws IOException {
+    public void displayProfileWindow(String[] args) throws IOException, DuplicateValueException, EmptySetException {
         LOGGER.debug("displayProfileWindow");
         Preconditions.checkNotNull(args);
         Preconditions.checkNotNull(args[0]);
@@ -72,7 +74,11 @@ public class ColumnsDefaultGUI extends ProfileDefaultGUI {
 
                 @Override
                 public void widgetSelected(SelectionEvent e) {
-                    save(arg);
+                    try {
+                        save(arg);
+                    } catch (DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException(ex.getMessage());
+                    }
                 }
             });
             saveButton.setVisible(true);
@@ -90,7 +96,7 @@ public class ColumnsDefaultGUI extends ProfileDefaultGUI {
     }
 
     @Override
-    public void tableDisplay() {
+    public void tableDisplay() throws DuplicateValueException, EmptySetException {
         LOGGER.debug("tableDisplay");
         // table layout handling
         mainShell.setLayout(new GridLayout());
@@ -205,7 +211,7 @@ public class ColumnsDefaultGUI extends ProfileDefaultGUI {
      * @param outputFile not <code>null</code>
      */
     @Override
-    public void save(String outputFile) {
+    public void save(String outputFile) throws DuplicateValueException, EmptySetException{
         LOGGER.debug("save :");
         Preconditions.checkNotNull(outputFile);
         File file = new File(outputFile);

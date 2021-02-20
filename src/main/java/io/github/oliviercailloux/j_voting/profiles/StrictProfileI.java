@@ -6,6 +6,9 @@ import java.util.List;
 
 import io.github.oliviercailloux.j_voting.OldLinearPreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.LinearPreferenceImpl;
 
 /**
  * A StrictProfileI represents an incomplete StrictProfile. The preferences are
@@ -20,7 +23,7 @@ public interface StrictProfileI extends ProfileI {
      * @return the StrictPreference of the voter v in the profile.
      */
     @Override
-    public OldLinearPreferenceImpl getPreference(Voter v);
+    public LinearPreferenceImpl getPreference(Voter v)throws EmptySetException, DuplicateValueException;
 
     @Override
     public default boolean isStrict() {
@@ -34,7 +37,7 @@ public interface StrictProfileI extends ProfileI {
      *         If the preference doesn't have an ith alternative, it adds an
      *         empty string to the list.
      */
-    public List<String> getIthAlternativesAsStrings(int i);
+    public List<String> getIthAlternativesAsStrings(int i) throws EmptySetException, DuplicateValueException;
 
     /**
      * 

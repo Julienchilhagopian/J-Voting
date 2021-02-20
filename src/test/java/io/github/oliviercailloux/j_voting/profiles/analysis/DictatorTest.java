@@ -11,8 +11,10 @@ import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 import io.github.oliviercailloux.j_voting.Alternative;
-import io.github.oliviercailloux.j_voting.OldCompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.Voter;
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
+import io.github.oliviercailloux.j_voting.preferences.classes.CompletePreferenceImpl;
 import io.github.oliviercailloux.j_voting.profiles.ImmutableProfileI;
 import io.github.oliviercailloux.j_voting.profiles.ProfileI;
 import io.github.oliviercailloux.j_voting.profiles.analysis.Dictator;
@@ -21,7 +23,7 @@ import io.github.oliviercailloux.j_voting.profiles.management.ProfileBuilder;
 public class DictatorTest {
 
     @Test
-    public void getSocietyPreferenceTest() {
+    public void getSocietyPreferenceTest() throws Exception {
         Voter v1 = Voter.createVoter(1);
         Voter v2 = Voter.createVoter(2);
         Voter v3 = Voter.createVoter(3);
@@ -44,9 +46,9 @@ public class DictatorTest {
         list1.add(s2);
         list2.add(s2);
         list3.add(s3);
-        OldCompletePreferenceImpl pref1 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list1);
-        OldCompletePreferenceImpl pref2 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list2);
-        OldCompletePreferenceImpl pref3 = OldCompletePreferenceImpl.createCompletePreferenceImpl(list3);
+        CompletePreferenceImpl pref1 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v1, list1);
+        CompletePreferenceImpl pref2 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v2, list2);
+        CompletePreferenceImpl pref3 = (CompletePreferenceImpl) CompletePreferenceImpl.asCompletePreference(v3, list3);
         ProfileBuilder prof = ProfileBuilder.createProfileBuilder();
         prof.addVote(v1, pref1);
         prof.addVote(v2, pref2);

@@ -2,6 +2,8 @@ package io.github.oliviercailloux.j_voting.profiles.gui;
 
 import java.io.IOException;
 
+import io.github.oliviercailloux.j_voting.exceptions.DuplicateValueException;
+import io.github.oliviercailloux.j_voting.exceptions.EmptySetException;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -169,9 +171,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOCColumnsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Columns GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Columns GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -185,9 +186,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOCRowsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Rows GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Rows SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -202,9 +202,8 @@ public class MainGUI {
                     try {
                         new SOCWrappedColumnsGUI()
                                         .displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening wrapped GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening wrapped GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -238,9 +237,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOIColumnsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Columns SOI GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("IOException when opening Columns SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -254,9 +252,8 @@ public class MainGUI {
                 } else {
                     try {
                         new SOIRowsGUI().displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Rows SOI GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Rows SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }
@@ -271,9 +268,8 @@ public class MainGUI {
                     try {
                         new SOIWrappedColumnsGUI()
                                         .displayProfileWindow(profileToRead);
-                    } catch (IOException ioe) {
-                        LOGGER.debug("IOException when opening Wrapped Columns SOI GUI : {}",
-                                        ioe);
+                    } catch (IOException | DuplicateValueException | EmptySetException ex) {
+                        throw new RuntimeException("Exception when opening Wrapped Columns SOI GUI : {}" + ex.getMessage());
                     }
                 }
             }
